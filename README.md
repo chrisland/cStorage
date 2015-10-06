@@ -6,12 +6,25 @@
 
 Easy JS Framework to get / edit localStorage
 
+Version: 0.2.0
+
 Author: Christian Marienfeld post@chrisand.de 
+
+
 ### Examples:
 
-    var storage = new cStorage('test');
+	var obj = {"data":[{id:1},{id:2},{id:3}]};
+    var storage = new cStorage('test').save(obj);
 
-Version: 0.2.0
+	var item = storage.root('data').find({id:2});
+	
+	var myItemObject = item.get();
+	
+	item.edit({name:"Hello World"});
+	
+	var json = storage.toString();
+	// json = {"data":[{"id":1},{"id":2,"name":"Hello World"},{"id":3}]}
+	
 
 ### Params:
 
@@ -21,6 +34,11 @@ Version: 0.2.0
 ### Return:
 
 * **Object** cStorage Object
+
+
+
+
+
 
 ## save([obj=global, [encode=false], [deeper=true])
 

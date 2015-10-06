@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Example</title>
+
+  <script src="../src/cStorage.js"></script>
+  
+  
+</head>
+
+<body>
+
+	<script type="text/javascript">
+		
+		
+		var storage = new cStorage('test')
+		var test = storage.get();
+		
+		
+		if (!test) {
+			var obj = {"test":"test","id":5555,"text":"there is cont(/&%$ent", "data": [{id:1,num:3},{id:1,num:4},{id:3,num:3}]};
+			
+			storage.save(obj,true);
+		}
+		
+		var newO = {
+			id: storage.root('data').getUid('id'),
+			name: 'OK'
+		}
+		
+		storage.add(newO);
+		
+
+		
+	</script>
+	
+	
+</body>
+</html>

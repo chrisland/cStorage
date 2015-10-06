@@ -25,11 +25,11 @@ Author: Christian Marienfeld post@chrisand.de
 	var json = storage.toString();
 	// json = {"data":[{"id":1},{"id":2,"name":"Hello World"},{"id":3}]}
 	
-
+##.
 
 ## cStorage(dbname, [rootString])
 
-Save the Main-Data-Object to the localStorage
+Initialise the cStorage Object
 
 ### Examples:
 
@@ -47,7 +47,7 @@ Save the Main-Data-Object to the localStorage
 
 
 
-##-------------------------
+##.
 
 # Methods:
 

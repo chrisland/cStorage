@@ -1,7 +1,7 @@
 /**
  * Easy JS Framework to get / edit localStorage
  *
- * @class Storage
+ * @class cStorage
  * @version 0.2.0
  * @license MIT
  *
@@ -51,66 +51,6 @@ function cStorage(dbname, rootString) {
 
 
 
- 
- 
-/**
-* Return true if Main-Data-Object is empty
-*
-* ### Examples:
-*
-*	var storage = new cStorage('emptyDb');
-*
-*	var check = storage.isEmpty();
-*
-*
-* @function isEmpty
-* @version 0.2.0
-*
-* @return {Boolean} filled (false) or not filled (true)
-*
-* @api public
-*/
-
-
-cStorage.prototype.isEmpty = function() {
-	if (JSON.stringify(this._data).replace(/[{}\[\]]/g, "") == '') {
-		return true;
-	} else {
-		return false;
-	}
-};
-
-/**
-* Return true if last Search was successful
-* ( functions: root(), find() ) 
-*
-* ### Examples:
-*
-*	var storage = new cStorage('test');
-*
-*	var check = storage.root('data').isFound();
-*
-*	var check = storage.find({id:4}).isFound();
-*
-*
-*
-* @function isFound
-* @version 0.2.0
-*
-* @return {Boolean} true if last root() or find() was successful
-*
-* @api public
-*/
-
-
-cStorage.prototype.isFound = function() {
-	return this._isFound;
-};
-
-
-
-
-
 
 
 /**
@@ -154,6 +94,9 @@ cStorage.prototype.save = function(obj, encode, deeper) {
 	return this;
 };
 
+
+
+
 /**
 * Navigate into the Main-Data-Object
 *
@@ -190,6 +133,8 @@ cStorage.prototype.root = function(root){
 	}
 	return this;
 };
+
+
 
 /**
 * Find Note from Selected-Data-Object
@@ -254,6 +199,86 @@ cStorage.prototype.find = function(param, deeper) {
 	}, that, deeper);
 	
 };
+
+
+
+/**
+* Return the Selected-Data-Object
+*
+* ### Examples:
+*
+*	var storage = new cStorage('test');
+*
+*	var get = storage.get();
+*
+*	var get = storage.root('data').get();
+*	var get = storage.get('data');
+*
+*	var get = storage.root('data').find({id:4}).get();
+*	var get = storage.root('data').find({id:4}).get(null,true); //decode values
+*
+*	var get = storage.get('data',true,false); //decode values but not deep
+*
+*
+* @function get
+* @version 0.1.0
+*
+* @param {String} [root=rootObject] Dot seperated path to get deeper into the object or array
+* @param {Boolean} [decode=false] Decode the value for humanreadable text
+* @param {Boolean} [deeper=true] Encode all deeper values from object
+*
+* @return {Object} Note object
+*
+* @api public
+*/
+
+
+cStorage.prototype.get = function(root, decode, deeper) {
+	
+	var obj = this._foundParent;
+	if (root) {
+		obj = _helper.getRootObjFromString(this._data, root);
+	}
+	if (decode){
+		if (deeper == undefined) {
+			deeper = true;
+		}
+		_helper.loop(obj, function (root, k) {
+			return _helper.decode(root[k]);
+		}, null, null, null, deeper);
+	} 
+	return obj;
+};
+
+
+
+/**
+* Return a clone of the Selected-Data-Object
+*
+* ### Examples:
+*
+*	var storage = new cStorage('test');
+*
+*	var clone = storage.clone();
+*
+*	var clone = storage.root('data').clone();
+*
+*	var clone = storage.root('data').find({id:6}).clone();
+*
+*
+* @function clone
+* @version 0.1.0
+*
+* @return {Object} Cloned note object
+*
+* @api public
+*/
+
+
+cStorage.prototype.clone = function() {
+	return JSON.parse(JSON.stringify(this._foundParent));
+};
+
 
 
 /**
@@ -428,94 +453,14 @@ cStorage.prototype.map = function(callback, deeper) {
 
 
 
-/**
-* Return the Selected-Data-Object
-*
-* ### Examples:
-*
-*	var storage = new cStorage('test');
-*
-*	var get = storage.get();
-*
-*	var get = storage.root('data').get();
-*	var get = storage.get('data');
-*
-*	var get = storage.root('data').find({id:4}).get();
-*	var get = storage.root('data').find({id:4}).get(null,true); //decode values
-*
-*	var get = storage.get('data',true,false); //decode values but not deep
-*
-*
-* @function get
-* @version 0.1.0
-*
-* @param {String} [root=rootObject] Dot seperated path to get deeper into the object or array
-* @param {Boolean} [decode=false] Decode the value for humanreadable text
-* @param {Boolean} [deeper=true] Encode all deeper values from object
-*
-* @return {Object} Note object
-*
-* @api public
-*/
-
-
-cStorage.prototype.get = function(root, decode, deeper) {
-	
-	var obj = this._foundParent;
-	if (root) {
-		obj = _helper.getRootObjFromString(this._data, root);
-	}
-	if (decode){
-		if (deeper == undefined) {
-			deeper = true;
-		}
-		_helper.loop(obj, function (root, k) {
-			return _helper.decode(root[k]);
-		}, null, null, null, deeper);
-	} 
-	return obj;
-};
 
 
 
 
 
 
-/**
-* Return the Selected-Data-Object as JSON-String
-*
-* ### Examples:
-*
-*	var storage = new cStorage('test');
-*
-*	var json = storage.toString();
-*
-*	var json = storage.root('data').toString();
-*
-*	var json = storage.toString('data');
-*	var json = storage.toString('data', true, false); //decode values but not deep
-*
-*	var json = storage.root('data').find({id:4}).toString();
-*	var json = storage.root('data').find({id:4}).toString(null,true); //decode values
-*
-*
-* @function toString
-* @version 0.1.0
-*
-* @param {String} [root=rootObject] Dot seperated path to get deeper into the object or array
-* @param {Boolean} [decode=false] Decode the value for humanreadable text
-* @param {Boolean} [deeper=true] Encode all deeper values from object
-*
-* @return {String} Note Object as JSON-String
-*
-* @api public
-*/
 
 
-
-cStorage.prototype.toString = function(root, decode, deeper) {
-	return JSON.stringify( this.get(root, decode, deeper) );	
-};
 
 
 
@@ -562,32 +507,7 @@ cStorage.prototype.getValue = function(decode) {
 
 
 
-/**
-* Return a clone of the Selected-Data-Object
-*
-* ### Examples:
-*
-*	var storage = new cStorage('test');
-*
-*	var clone = storage.clone();
-*
-*	var clone = storage.root('data').clone();
-*
-*	var clone = storage.root('data').find({id:6}).clone();
-*
-*
-* @function clone
-* @version 0.1.0
-*
-* @return {Object} Cloned note object
-*
-* @api public
-*/
 
-
-cStorage.prototype.clone = function() {
-	return JSON.parse(JSON.stringify(this._foundParent));
-};
 
 
 /**
@@ -644,6 +564,105 @@ cStorage.prototype.getUid = function(key, deeper) {
 	}	
 	return ret+1;
 };
+
+
+
+
+/**
+* Return the Selected-Data-Object as JSON-String
+*
+* ### Examples:
+*
+*	var storage = new cStorage('test');
+*
+*	var json = storage.toString();
+*
+*	var json = storage.root('data').toString();
+*
+*	var json = storage.toString('data');
+*	var json = storage.toString('data', true, false); //decode values but not deep
+*
+*	var json = storage.root('data').find({id:4}).toString();
+*	var json = storage.root('data').find({id:4}).toString(null,true); //decode values
+*
+*
+* @function toString
+* @version 0.1.0
+*
+* @param {String} [root=rootObject] Dot seperated path to get deeper into the object or array
+* @param {Boolean} [decode=false] Decode the value for humanreadable text
+* @param {Boolean} [deeper=true] Encode all deeper values from object
+*
+* @return {String} Note Object as JSON-String
+*
+* @api public
+*/
+
+
+
+cStorage.prototype.toString = function(root, decode, deeper) {
+	return JSON.stringify( this.get(root, decode, deeper) );	
+};
+
+
+ 
+/**
+* Return true if Main-Data-Object is empty
+*
+* ### Examples:
+*
+*	var storage = new cStorage('emptyDb');
+*
+*	var check = storage.isEmpty();
+*
+*
+* @function isEmpty
+* @version 0.2.0
+*
+* @return {Boolean} filled (false) or not filled (true)
+*
+* @api public
+*/
+
+
+cStorage.prototype.isEmpty = function() {
+	if (JSON.stringify(this._data).replace(/[{}\[\]]/g, "") == '') {
+		return true;
+	} else {
+		return false;
+	}
+};
+
+
+
+/**
+* Return true if last Search was successful
+* ( functions: root(), find() ) 
+*
+* ### Examples:
+*
+*	var storage = new cStorage('test');
+*
+*	var check = storage.root('data').isFound();
+*
+*	var check = storage.find({id:4}).isFound();
+*
+*
+*
+* @function isFound
+* @version 0.2.0
+*
+* @return {Boolean} true if last root() or find() was successful
+*
+* @api public
+*/
+
+
+cStorage.prototype.isFound = function() {
+	return this._isFound;
+};
+
+
 
 
 

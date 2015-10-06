@@ -2,7 +2,7 @@
 
 <!-- Start src/cStorage.js -->
 
-## Storage
+## cStorage
 
 Easy JS Framework to get / edit localStorage
 
@@ -11,7 +11,7 @@ Author: Christian Marienfeld post@chrisand.de
 
     var storage = new cStorage('test');
 
-Version: 0.1.0
+Version: 0.2.0
 
 ### Params:
 
@@ -92,6 +92,56 @@ Version: 0.1.0
 ### Return:
 
 * **Object** cStorage Object
+
+## get([root=rootObject], [decode=false], [deeper=true])
+
+Return the Selected-Data-Object
+
+### Examples:
+
+	var storage = new cStorage('test');
+
+	var get = storage.get();
+
+	var get = storage.root('data').get();
+	var get = storage.get('data');
+
+	var get = storage.root('data').find({id:4}).get();
+	var get = storage.root('data').find({id:4}).get(null,true); //decode values
+
+	var get = storage.get('data',true,false); //decode values but not deep
+
+Version: 0.1.0
+
+### Params:
+
+* **String** *[root=rootObject]* Dot seperated path to get deeper into the object or array
+* **Boolean** *[decode=false]* Decode the value for humanreadable text
+* **Boolean** *[deeper=true]* Encode all deeper values from object
+
+### Return:
+
+* **Object** Note object
+
+## clone()
+
+Return a clone of the Selected-Data-Object
+
+### Examples:
+
+	var storage = new cStorage('test');
+
+	var clone = storage.clone();
+
+	var clone = storage.root('data').clone();
+
+	var clone = storage.root('data').find({id:6}).clone();
+
+Version: 0.1.0
+
+### Return:
+
+* **Object** Cloned note object
 
 ## edit(obj)
 
@@ -181,35 +231,47 @@ Version: 0.1.0
 
 * **Object** cStorage Object
 
-## get([root=rootObject], [decode=false], [deeper=true])
+## getValue([decode=false])
 
-Return the Selected-Data-Object
+Return the Selected-Data-Value
 
 ### Examples:
 
 	var storage = new cStorage('test');
 
-	var get = storage.get();
+	var json = storage.getValue();
 
-	var get = storage.root('data').get();
-	var get = storage.get('data');
-
-	var get = storage.root('data').find({id:4}).get();
-	var get = storage.root('data').find({id:4}).get(null,true); //decode values
-
-	var get = storage.get('data',true,false); //decode values but not deep
+	var json = storage.getValue(true); //decode values
 
 Version: 0.1.0
 
 ### Params:
 
-* **String** *[root=rootObject]* Dot seperated path to get deeper into the object or array
 * **Boolean** *[decode=false]* Decode the value for humanreadable text
-* **Boolean** *[deeper=true]* Encode all deeper values from object
 
 ### Return:
 
-* **Object** Note object
+* **Object** Value Object
+
+## getUid()
+
+Return a unique identifier of the Selected-Data-Object
+
+### Examples:
+
+	var storage = new cStorage('test');
+
+	var nextId = storage.getUid();
+
+	var nextId = storage.root('data').getUid();
+
+	var nextId = storage.root('json.data.users').getUid();
+
+Version: 0.1.0
+
+### Return:
+
+* **Number** a unique identifier as integer
 
 ## toString([root=rootObject], [decode=false], [deeper=true])
 
@@ -241,67 +303,40 @@ Version: 0.1.0
 
 * **String** Note Object as JSON-String
 
-## getValue([decode=false])
+## isEmpty()
 
-Return the Selected-Data-Value
+Return true if Main-Data-Object is empty
+
+### Examples:
+
+	var storage = new cStorage('emptyDb');
+
+	var check = storage.isEmpty();
+
+Version: 0.2.0
+
+### Return:
+
+* **Boolean** filled (false) or not filled (true)
+
+## isFound()
+
+Return true if last Search was successful
+( functions: root(), find() ) 
 
 ### Examples:
 
 	var storage = new cStorage('test');
 
-	var json = storage.getValue();
+	var check = storage.root('data').isFound();
 
-	var json = storage.getValue(true); //decode values
+	var check = storage.find({id:4}).isFound();
 
-Version: 0.1.0
-
-### Params:
-
-* **Boolean** *[decode=false]* Decode the value for humanreadable text
+Version: 0.2.0
 
 ### Return:
 
-* **Object** Value Object
-
-## clone()
-
-Return a clone of the Selected-Data-Object
-
-### Examples:
-
-	var storage = new cStorage('test');
-
-	var clone = storage.clone();
-
-	var clone = storage.root('data').clone();
-
-	var clone = storage.root('data').find({id:6}).clone();
-
-Version: 0.1.0
-
-### Return:
-
-* **Object** Cloned note object
-
-## getUid()
-
-Return a unique identifier of the Selected-Data-Object
-
-### Examples:
-
-	var storage = new cStorage('test');
-
-	var nextId = storage.getUid();
-
-	var nextId = storage.root('data').getUid();
-
-	var nextId = storage.root('json.data.users').getUid();
-
-Version: 0.1.0
-
-### Return:
-
-* **Number** a unique identifier as integer
+* **Boolean** true if last root() or find() was successful
 
 <!-- End src/cStorage.js -->
 

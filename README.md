@@ -36,10 +36,15 @@ Author: Christian Marienfeld post@chrisand.de
 * **Object** cStorage Object
 
 
-#
 
-## Methods
+#------------------------------------------------------------------
 
+# Methods:
+
+#### save, root, find, get, clone, edit, add, map, getValue, getUid, toString, isEmpty, isFound
+
+
+###------------------------------------------------------------------
 
 ## save([obj=global, [encode=false], [deeper=true])
 
@@ -63,6 +68,8 @@ Version: 0.1.0
 
 * **Object** cStorage object
 
+###------------------------------------------------------------------
+
 ## root([root=rootObject])
 
 Navigate into the Main-Data-Object
@@ -84,6 +91,10 @@ Version: 0.1.0
 ### Return:
 
 * **Object** cStorage Object
+
+
+###------------------------------------------------------------------
+
 
 ## find(param, [deeper=true])
 
@@ -111,6 +122,9 @@ Version: 0.1.0
 ### Return:
 
 * **Object** cStorage Object
+
+
+###------------------------------------------------------------------
 
 ## get([root=rootObject], [decode=false], [deeper=true])
 
@@ -142,6 +156,9 @@ Version: 0.1.0
 
 * **Object** Note object
 
+
+###------------------------------------------------------------------
+
 ## clone()
 
 Return a clone of the Selected-Data-Object
@@ -161,6 +178,9 @@ Version: 0.1.0
 ### Return:
 
 * **Object** Cloned note object
+
+
+###------------------------------------------------------------------
 
 ## edit(obj)
 
@@ -188,6 +208,9 @@ Version: 0.1.0
 ### Return:
 
 * **Object** cStorage Object
+
+
+###------------------------------------------------------------------
 
 ## add(obj)
 
@@ -218,6 +241,9 @@ Version: 0.1.0
 ### Return:
 
 * **Object** cStorage Object
+
+
+###------------------------------------------------------------------
 
 ## map(callback, [deeper=true])
 
@@ -250,6 +276,9 @@ Version: 0.1.0
 
 * **Object** cStorage Object
 
+
+###------------------------------------------------------------------
+
 ## getValue([decode=false])
 
 Return the Selected-Data-Value
@@ -272,6 +301,9 @@ Version: 0.1.0
 
 * **Object** Value Object
 
+
+###------------------------------------------------------------------
+
 ## getUid()
 
 Return a unique identifier of the Selected-Data-Object
@@ -291,6 +323,9 @@ Version: 0.1.0
 ### Return:
 
 * **Number** a unique identifier as integer
+
+
+###------------------------------------------------------------------
 
 ## toString([root=rootObject], [decode=false], [deeper=true])
 
@@ -322,6 +357,9 @@ Version: 0.1.0
 
 * **String** Note Object as JSON-String
 
+
+###------------------------------------------------------------------
+
 ## isEmpty()
 
 Return true if Main-Data-Object is empty
@@ -337,6 +375,9 @@ Version: 0.2.0
 ### Return:
 
 * **Boolean** filled (false) or not filled (true)
+
+
+###------------------------------------------------------------------
 
 ## isFound()
 

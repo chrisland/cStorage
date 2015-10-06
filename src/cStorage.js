@@ -2,7 +2,7 @@
  * Easy JS Framework to get / edit localStorage
  *
  * @class Storage
- * @version 0.1.0
+ * @version 0.2.0
  * @license MIT
  *
  * @author Christian Marienfeld post@chrisand.de
@@ -33,10 +33,16 @@ function cStorage(dbname, rootString) {
 		this._dbname = dbname;
 		this._data = _helper.getStorage(this._dbname);
 		
-		console.log();
+		//console.log(Object.keys(this._data).length);
+		
+		
 		
 		this._foundParent = this.root(rootString)._foundParent;
 		this._foundChild = false;
+		
+		this._isFound = false;
+	
+		
 	
 		return this;
 	}	
@@ -46,6 +52,65 @@ function cStorage(dbname, rootString) {
 
 
  
+ 
+/**
+* Return true if Main-Data-Object is not empty
+*
+* ### Examples:
+*
+*	var storage = new cStorage('emptyDb');
+*
+*	var check = storage.isEmpty();
+*
+*
+* @function isEmpty
+* @version 0.2.0
+*
+* @return {Boolean} filled or not filled
+*
+* @api public
+*/
+
+
+cStorage.prototype.isEmpty = function() {
+	if (JSON.stringify(this._data).replace(/[{}\[\]]/g, "") != '') {
+		return true;
+	} else {
+		return false;
+	}
+};
+
+/**
+* Return true if last Search was successful
+* ( functions: root(), find() ) 
+*
+* ### Examples:
+*
+*	var storage = new cStorage('test');
+*
+*	var check = storage.root('data').isFound();
+*
+*	var check = storage.find({id:4}).isFound();
+*
+*
+*
+* @function isFound
+* @version 0.2.0
+*
+* @return {Boolean} true if last root() or find() was successful
+*
+* @api public
+*/
+
+
+cStorage.prototype.isFound = function() {
+	return this._isFound;
+};
+
+
+
+
+
 
 
 /**
@@ -83,7 +148,8 @@ cStorage.prototype.save = function(obj, encode, deeper) {
 		}, null, null, null, deeper);
 	} 	
 	this._data = this._foundParent = obj;
-	window.localStorage.setItem(this._dbname, this.toString(''));
+	this._isFound = false;
+	window.localStorage.setItem(this._dbname, this.toString());
 	
 	return this;
 };
@@ -111,6 +177,7 @@ cStorage.prototype.save = function(obj, encode, deeper) {
 
 
 cStorage.prototype.root = function(root){
+	this._isFound = false;
 	if (!root) {
 		this._foundParent = this._data;
 	} else {
@@ -118,6 +185,7 @@ cStorage.prototype.root = function(root){
 		var loopRoot = _helper.getRootObjFromString(this._data, root);
 		if (loopRoot) {
 			this._foundParent = loopRoot;
+			this._isFound = true;
 		}
 	}
 	return this;
@@ -174,10 +242,13 @@ cStorage.prototype.find = function(param, deeper) {
 	var root = this._foundParent;
 	var that = this;
 	
+	that._isFound = false;
+	
 	return _helper.loop(root, null, {key:findKey, value:findValue}, function (parent, child) {
 		
 		that._foundParent = parent;
 		that._foundChild = child;
+		that._isFound = true;
 
 		return that;
 	}, that, deeper);
@@ -483,6 +554,14 @@ cStorage.prototype.getValue = function(decode) {
 
 
 
+
+
+
+
+
+
+
+
 /**
 * Return a clone of the Selected-Data-Object
 *
@@ -575,14 +654,12 @@ cStorage.prototype.getUid = function(key, deeper) {
 var _helper = {
 	
 	getStorage: function(name) {
-	
 		
 		var localDb = window.localStorage.getItem(name) || '{}';
 		var obj = {};
 		
 		try{
 			obj = JSON.parse(localDb);
-			console.log(obj);
 			if (typeof obj === 'object') {		
 				return obj;
 			} 
@@ -592,8 +669,6 @@ var _helper = {
 	        throw new Error('non well formed json string');
 	        return {};
 	    }
-	    
-		
 	},
 
 	encode: function (str) {

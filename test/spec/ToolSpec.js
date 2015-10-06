@@ -1684,5 +1684,220 @@ describe("storage", function() {
 		
 	});
 	
+	
+	
+	
+	describe("isEmpty()", function() {
+		
+		
+		beforeEach(function() {
+				
+			localStorage.removeItem(dbname);
+			
+		});
+		
+		
+		it("isEmpty() should retrun true if gloabl data is set",function() {
+			
+			var obj = {a:1};
+			
+			var storage = new cStorage(dbname).save(obj);
+			//console.log(storage);
+			
+			var ret = storage.isEmpty();
+			
+
+			expect(ret).toEqual(true);
+			
+		});
+		
+		
+		it("isEmpty() should retrun false if gloabl data is empty",function() {
+			
+			//var obj = {};
+			
+			var storage = new cStorage(dbname);
+			
+			var ret = storage.isEmpty();
+			
+			//console.log(storage._data);
+			//console.log(ret);
+
+			expect(ret).toEqual(false);
+			
+		});
+		
+	});
+	
+	
+	describe("isFound()", function() {
+		
+		
+		beforeEach(function() {
+				
+			localStorage.removeItem(dbname);
+			
+		});
+		
+		
+		it("isFound() should retrun false if _foundParent data is never changed",function() {
+			
+			var obj = {a:1};
+			
+			var storage = new cStorage(dbname).save(obj);
+			//console.log(storage);
+			
+			var ret = storage.isFound();
+			
+
+			expect(ret).toEqual(false);
+			
+		});
+		
+		
+		it("isFound() should retrun true after succes root()",function() {
+			
+			var obj = {"data":[{id:3},{id:6},{id:8}]};
+			
+			var storage = new cStorage(dbname).save(obj).root('data');
+			
+			var ret = storage.isFound();
+			
+			//console.log(storage._data);
+			//console.log(ret);
+
+			expect(ret).toEqual(true);
+			
+		});
+		
+		
+		it("isFound() should retrun false after error root()",function() {
+			
+			var obj = {"data":[{id:3},{id:6},{id:8}]};
+			
+			var storage = new cStorage(dbname).save(obj).root('data').root('error');
+			
+			var ret = storage.isFound();
+			
+			//console.log(storage._data);
+			//console.log(ret);
+
+			expect(ret).toEqual(false);
+			
+		});
+		
+		
+		it("isFound() should retrun false after root() without param, set to root",function() {
+			
+			var obj = {"data":[{id:3},{id:6},{id:8}]};
+			
+			var storage = new cStorage(dbname).save(obj).root('data').root();
+			
+			var ret = storage.isFound();
+			
+			//console.log(storage._data);
+			//console.log(ret);
+
+			expect(ret).toEqual(false);
+			
+		});
+		
+		
+		it("isFound() should retrun true after succes find()",function() {
+			
+			var obj = {"data":[{id:3},{id:6},{id:8}]};
+			
+			var storage = new cStorage(dbname).save(obj).find({id:3});
+			
+			//console.log( storage.find({id:3},false).get() );
+			
+			var ret = storage.isFound();
+			
+			//console.log(storage._data);
+			//console.log(ret);
+
+			expect(ret).toEqual(true);
+			
+		});
+		
+		
+		it("isFound() should retrun false after error find()",function() {
+			
+			var obj = {"data":[{id:3},{id:6},{id:8}]};
+			
+			var storage = new cStorage(dbname).save(obj).find({test:3});
+			
+			//console.log( storage.find({id:3},false).get() );
+			
+			var ret = storage.isFound();
+			
+			//console.log(storage._data);
+			//console.log(ret);
+
+			expect(ret).toEqual(false);
+			
+		});
+		
+		
+		
+		it("isFound() should retrun true after succes root() and succes find()",function() {
+			
+			var obj = {"data":[{id:3},{id:6},{id:8}]};
+			
+			var storage = new cStorage(dbname).save(obj).root('data').find({id:3});
+			
+			//console.log( storage.root('data').find({id:3}).get() );
+			
+			var ret = storage.isFound();
+			
+			//console.log(storage._data);
+			//console.log(ret);
+
+			expect(ret).toEqual(true);
+			
+		});
+		
+		
+		it("isFound() should retrun true after error root() and succes find()",function() {
+			
+			var obj = {"data":[{id:3},{id:6},{id:8}]};
+			
+			var storage = new cStorage(dbname).save(obj).root('error').find({id:3});
+			
+			//console.log( storage.root('data').find({id:3}).get() );
+			
+			var ret = storage.isFound();
+			
+			//console.log(storage._data);
+			//console.log(ret);
+
+			expect(ret).toEqual(true);
+			
+		});
+		
+		
+		it("isFound() should retrun false after succes root() and error find()",function() {
+			
+			var obj = {"data":[{id:3},{id:6},{id:8}]};
+			
+			var storage = new cStorage(dbname).save(obj).root('data').find({id:4});
+			
+			//console.log( storage.root('data').find({id:3}).get() );
+			
+			var ret = storage.isFound();
+			
+			//console.log(storage._data);
+			//console.log(ret);
+
+			expect(ret).toEqual(false);
+			
+		});
+		
+		
+		
+	});
+	
+	
+	
 
 });

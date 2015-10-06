@@ -2,7 +2,7 @@
 
 <!-- Start src/cStorage.js -->
 
-## cStorage
+# cStorage
 
 Easy JS Framework to get / edit localStorage
 
@@ -36,8 +36,9 @@ Author: Christian Marienfeld post@chrisand.de
 * **Object** cStorage Object
 
 
+#
 
-
+## Methods
 
 
 ## save([obj=global, [encode=false], [deeper=true])

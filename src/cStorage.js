@@ -9,10 +9,19 @@
  *
  * ### Examples:
  *
- *     var storage = new cStorage('test');
- *
-
-
+*	var obj = {"data":[{id:1},{id:2},{id:3}]};
+*	var storage = new cStorage('test').save(obj);
+*	
+*	var item = storage.root('data').find({id:2});
+*	
+*	var myItemObject = item.get();
+*	
+*	item.edit({name:"Hello World"});
+*		
+*	var json = storage.toString();
+*	// json = {"data":[{"id":1},{"id":2,"name":"Hello World"},{"id":3}]}
+*	
+*	
  *
  * @param {String} dbname Name of localStorage
  * @param {String} [rootString] Dot seperated path to get deeper into the object or array

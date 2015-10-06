@@ -13,25 +13,19 @@
 
 	<script type="text/javascript">
 		
-		
-		var storage = new cStorage('test')
-		var test = storage.get();
-		
-		
-		if (!test) {
-			var obj = {"test":"test","id":5555,"text":"there is cont(/&%$ent", "data": [{id:1,num:3},{id:1,num:4},{id:3,num:3}]};
-			
-			storage.save(obj,true);
-		}
-		
-		var newO = {
-			id: storage.root('data').getUid('id'),
-			name: 'OK'
-		}
-		
-		storage.add(newO);
-		
 
+
+	var obj = {"data":[{id:1},{id:2},{id:3}]};
+    var storage = new cStorage('test').save(obj);
+
+	var item = storage.root('data').find({id:2});
+	
+	var myItemObject = item.get();
+	
+	item.edit({name:"Hello World"});
+	
+	var json = storage.toString();
+	// json = {"data":[{"id":1},{"id":2,"name":"Hello World"},{"id":3}]}
 		
 	</script>
 	

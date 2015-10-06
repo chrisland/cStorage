@@ -1697,7 +1697,7 @@ describe("storage", function() {
 		});
 		
 		
-		it("isEmpty() should retrun true if gloabl data is set",function() {
+		it("isEmpty() should retrun false if gloabl data is set",function() {
 			
 			var obj = {a:1};
 			
@@ -1707,12 +1707,12 @@ describe("storage", function() {
 			var ret = storage.isEmpty();
 			
 
-			expect(ret).toEqual(true);
+			expect(ret).toEqual(false);
 			
 		});
 		
 		
-		it("isEmpty() should retrun false if gloabl data is empty",function() {
+		it("isEmpty() should retrun true if gloabl data is empty",function() {
 			
 			//var obj = {};
 			
@@ -1723,7 +1723,7 @@ describe("storage", function() {
 			//console.log(storage._data);
 			//console.log(ret);
 
-			expect(ret).toEqual(false);
+			expect(ret).toEqual(true);
 			
 		});
 		

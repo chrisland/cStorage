@@ -54,7 +54,7 @@ function cStorage(dbname, rootString) {
  
  
 /**
-* Return true if Main-Data-Object is not empty
+* Return true if Main-Data-Object is empty
 *
 * ### Examples:
 *
@@ -66,14 +66,14 @@ function cStorage(dbname, rootString) {
 * @function isEmpty
 * @version 0.2.0
 *
-* @return {Boolean} filled or not filled
+* @return {Boolean} filled (false) or not filled (true)
 *
 * @api public
 */
 
 
 cStorage.prototype.isEmpty = function() {
-	if (JSON.stringify(this._data).replace(/[{}\[\]]/g, "") != '') {
+	if (JSON.stringify(this._data).replace(/[{}\[\]]/g, "") == '') {
 		return true;
 	} else {
 		return false;

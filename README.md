@@ -26,6 +26,16 @@ Author: Christian Marienfeld post@chrisand.de
 	// json = {"data":[{"id":1},{"id":2,"name":"Hello World"},{"id":3}]}
 	
 
+
+## cStorage(dbname, [rootString])
+
+Save the Main-Data-Object to the localStorage
+
+### Examples:
+
+    var storage = new cStorage('test');
+    var storage = new cStorage('test','data.userlist');
+    
 ### Params:
 
 * **String** *dbname* Name of localStorage
@@ -37,11 +47,11 @@ Author: Christian Marienfeld post@chrisand.de
 
 
 
-#------------------------------------------------------------------
+##-------------------------
 
 # Methods:
 
-#### save, root, find, get, clone, edit, add, map, getValue, getUid, toString, isEmpty, isFound
+##### save, root, find, get, clone, edit, add, map, getValue, getUid, toString, isEmpty, isFound
 
 
 ###------------------------------------------------------------------

@@ -2,7 +2,7 @@
  * Easy JS Framework to get / edit localStorage
  *
  * @class cStorage
- * @version 0.2.0
+ * @version 0.2.1
  * @license MIT
  *
  * @author Christian Marienfeld post@chrisand.de
@@ -534,7 +534,9 @@ cStorage.prototype.getValue = function(decode) {
 *
 *
 * @function getUid
-* @version 0.1.0
+* @version 0.2.1
+*
+* @param {String} key Name of the unique identifier
 *
 * @return {Number} a unique identifier as integer
 *
@@ -635,7 +637,8 @@ cStorage.prototype.toString = function(root, decode, deeper) {
 
 
 cStorage.prototype.isEmpty = function() {
-	if (JSON.stringify(this._data).replace(/[{}\[\]]/g, "") == '') {
+	var root = this._foundParent;
+	if (JSON.stringify(root).replace(/[{}\[\]]/g, "") == '') {
 		return true;
 	} else {
 		return false;

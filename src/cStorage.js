@@ -2,7 +2,7 @@
  * Easy JS Framework to get / edit localStorage
  *
  * @class cStorage
- * @version 0.2.2
+ * @version 0.2.3
  * @license MIT
  *
  * @author Christian Marienfeld post@chrisand.de
@@ -48,6 +48,7 @@ function cStorage(dbname, rootString) {
 
 		this._foundParent = this.root(rootString)._foundParent;
 		this._foundChild = false;
+    this._foundKey = false;
 
 		this._isFound = false;
 
@@ -198,10 +199,13 @@ cStorage.prototype.find = function(param, deeper) {
 
 	that._isFound = false;
 
-	return _helper.loop(root, null, {key:findKey, value:findValue}, function (parent, child) {
+	return _helper.loop(root, null, {key:findKey, value:findValue}, function (parent, child, key) {
 
+    console.log('callback');
 		that._foundParent = parent;
 		that._foundChild = child;
+    that._foundKey = key;
+
 		that._isFound = true;
 
 		return that;
@@ -407,6 +411,73 @@ cStorage.prototype.add = function(obj) {
 
 
 
+
+
+
+/**
+* Remove the Selected-Data-Object value
+*
+* ### Examples:
+*
+*	var storage = new cStorage('test');
+*
+*	storage.root('data').edit({value:6});
+*
+*	storage.find({id:1}).edit({data:'new Data'});
+*
+*	storage.find({id:2}).edit({
+*		text:'HERE IS AN NEW WORLD',
+*		lang: 'The new World'
+*	});
+*
+* @function remove
+* @version 0.2.3
+*
+*
+* @return {Object} cStorage Object
+*
+* @api public
+*/
+
+
+
+cStorage.prototype.remove = function() {
+
+	if (Object.prototype.toString.call( this._foundParent ) === '[object Array]') {
+		console.log('array!');
+    console.log(this._foundParent.indexOf());
+    return this;
+	} else if (Object.prototype.toString.call( this._foundParent ) === '[object Object]') {
+		console.log('object!',this._foundParent, this._foundChild, this._foundKey);
+    //delete this._foundParent;
+    //alert(this._foundParent.indexOf);
+    delete this._data[this._foundKey];
+    return this;
+	} else {
+    console.log('nothing!');
+    return this;
+  }
+  //
+	// if (!obj) {
+	// 	return this;
+	// }
+	// var findKey, findKey;
+	// for(var i in obj){
+	// 	findKey = i || '';
+	// 	findValue = obj[i] || '';
+	// 	if (findKey) {
+	// 		this._foundParent[findKey] = findValue;
+	// 	}
+	// }
+	// this.save();
+  //this.save();
+	//return this;
+};
+
+
+
+
+
 /**
 * Loop to the Selected-Data-Object
 *
@@ -450,23 +521,6 @@ cStorage.prototype.map = function(callback, deeper) {
 	}
 	return _helper.loop(this._foundParent, callback, null,null, this, deeper);
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -557,10 +611,10 @@ cStorage.prototype.getUid = function(key, deeper) {
 	var ret = false;
 	var set = function (value) {
 		if (!ret) {
-			ret = value;
+			ret = parseInt(value);
 		} else {
 			if (ret < value) {
-				ret = value;
+				ret = parseInt(value);
 			}
 		}
 	};
@@ -570,9 +624,10 @@ cStorage.prototype.getUid = function(key, deeper) {
 		}
 	};
 	_helper.loop(root, allways, null, null, null, deeper);
-	if (!ret) {
+	if (!ret || isNaN(ret)) {
 		ret = 0
 	}
+
 	return parseInt(ret)+1;
 };
 
@@ -731,8 +786,9 @@ var _helper = {
 		return loopRoot;
 	},
 
-	loop: function (root, allways, foundSelector, found, returnThat, deeper) {
+	loop: function (root, allways, foundSelector, found, returnThat, deeper, lastPath) {
 
+    //console.log('lastPath',lastPath);
 
 		var rootTyp;
 		if (Object.prototype.toString.call( root ) === '[object Object]') {
@@ -743,6 +799,7 @@ var _helper = {
 			return false;
 		}
 
+    var path = lastPath || [];
 		for (var k in root) {
 			if (root.hasOwnProperty(k)) {
 
@@ -757,10 +814,13 @@ var _helper = {
 				}
 
 				if (typeof root[k] === 'object') {
-					//console.log('--- get deeper');
+					//console.log('--- get deeper ', k);
 					if (deeper) {
-						var retDeep = _helper.loop(root[k],allways, foundSelector , found, null, deeper);
+						var retDeep = _helper.loop(root[k],allways, foundSelector , found, null, deeper, path);
 						if (retDeep) {
+
+              path.push(k);
+              console.log('found',k, path.reverse().join('.'), retDeep);
 							return retDeep;
 						}
 					}
@@ -768,13 +828,14 @@ var _helper = {
 				}
 
 				if(found){
+          console.log(lastPath);
 					if (rootTyp == 'object') {
 						if (foundSelector.key && foundSelector.value && k == foundSelector.key && root[k] == foundSelector.value) {
-							return found(root, root[k]);
+							return found(root, root[k], path.reverse().join('.') );
 						}
 					} else if (rootTyp == 'array') {
 						if (foundSelector.value && root[k] == foundSelector.value) {
-							return found(root, root[k]);
+							return found(root, root[k], path.reverse().join('.'));
 						}
 					}
 				}

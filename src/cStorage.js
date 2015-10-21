@@ -2,7 +2,7 @@
  * Easy JS Framework to get / edit localStorage
  *
  * @class cStorage
- * @version 0.2.1
+ * @version 0.2.2
  * @license MIT
  *
  * @author Christian Marienfeld post@chrisand.de
@@ -11,50 +11,50 @@
  *
 *	var obj = {"data":[{id:1},{id:2},{id:3}]};
 *	var storage = new cStorage('test').save(obj);
-*	
+*
 *	var item = storage.root('data').find({id:2});
-*	
+*
 *	var myItemObject = item.get();
-*	
+*
 *	item.edit({name:"Hello World"});
-*		
+*
 *	var json = storage.toString();
 *	// json = {"data":[{"id":1},{"id":2,"name":"Hello World"},{"id":3}]}
-*	
-*	
+*
+*
  *
  * @param {String} dbname Name of localStorage
  * @param {String} [rootString] Dot seperated path to get deeper into the object or array
  *
  * @return {Object} cStorage Object
- 
+
  * @api public
  */
- 
- 
+
+
 function cStorage(dbname, rootString) {
-	
+
 	if (!dbname) {
 		throw new Error('missing function params');
 		return false;
 	} else {
-		
+
 		this._dbname = dbname;
 		this._data = _helper.getStorage(this._dbname);
-		
+
 		//console.log(Object.keys(this._data).length);
-		
-		
-		
+
+
+
 		this._foundParent = this.root(rootString)._foundParent;
 		this._foundChild = false;
-		
+
 		this._isFound = false;
-	
-		
-	
+
+
+
 		return this;
-	}	
+	}
 
 }
 
@@ -82,7 +82,7 @@ function cStorage(dbname, rootString) {
 *
 * @api public
 */
- 
+
 
 cStorage.prototype.save = function(obj, encode, deeper) {
 	if (!obj || typeof obj !== 'object') {
@@ -95,11 +95,11 @@ cStorage.prototype.save = function(obj, encode, deeper) {
 		_helper.loop(obj, function (root, k) {
 			return _helper.encode(root[k]);
 		}, null, null, null, deeper);
-	} 	
+	}
 	this._data = this._foundParent = obj;
 	this._isFound = false;
 	window.localStorage.setItem(this._dbname, this.toString());
-	
+
 	return this;
 };
 
@@ -133,7 +133,7 @@ cStorage.prototype.root = function(root){
 	if (!root) {
 		this._foundParent = this._data;
 	} else {
-		
+
 		var loopRoot = _helper.getRootObjFromString(this._data, root);
 		if (loopRoot) {
 			this._foundParent = loopRoot;
@@ -173,40 +173,40 @@ cStorage.prototype.root = function(root){
 
 
 cStorage.prototype.find = function(param, deeper) {
-	
+
 	if (!param) {
 		return false;
 	}
-	
+
 	if (deeper == undefined) {
 		deeper = true;
 	}
 	var findKey, findValue;
-	
+
 	if (typeof param === 'string' || typeof param === 'number' ) {
 		findValue = findKey = param;
 	} else {
-		
-		for(var i in param){	  
+
+		for(var i in param){
 		  findKey = i;
 		  findValue = param[i];
 		}
 	}
-	
+
 	var root = this._foundParent;
 	var that = this;
-	
+
 	that._isFound = false;
-	
+
 	return _helper.loop(root, null, {key:findKey, value:findValue}, function (parent, child) {
-		
+
 		that._foundParent = parent;
 		that._foundChild = child;
 		that._isFound = true;
 
 		return that;
 	}, that, deeper);
-	
+
 };
 
 
@@ -243,7 +243,7 @@ cStorage.prototype.find = function(param, deeper) {
 
 
 cStorage.prototype.get = function(root, decode, deeper) {
-	
+
 	var obj = this._foundParent;
 	if (root) {
 		obj = _helper.getRootObjFromString(this._data, root);
@@ -255,7 +255,7 @@ cStorage.prototype.get = function(root, decode, deeper) {
 		_helper.loop(obj, function (root, k) {
 			return _helper.decode(root[k]);
 		}, null, null, null, deeper);
-	} 
+	}
 	return obj;
 };
 
@@ -319,7 +319,7 @@ cStorage.prototype.clone = function() {
 
 
 cStorage.prototype.edit = function(obj) {
-	
+
 	if (Object.prototype.toString.call( this._foundParent ) === '[object Array]') {
 		return this;
 	}
@@ -327,7 +327,7 @@ cStorage.prototype.edit = function(obj) {
 		return this;
 	}
 	var findKey, findKey;
-	for(var i in obj){	  
+	for(var i in obj){
 		findKey = i || '';
 		findValue = obj[i] || '';
 		if (findKey) {
@@ -335,7 +335,7 @@ cStorage.prototype.edit = function(obj) {
 		}
 	}
 	this.save();
-	
+
 	return this;
 };
 
@@ -377,22 +377,22 @@ cStorage.prototype.add = function(obj) {
 	}
 	var root = this._foundParent;
 	var that = this;
-	
+
 	var doit = function (r,p) {
 		if (Object.prototype.toString.call( r ) === '[object Object]') {
 			var findKey, findKey;
-			for(var i in p){	  
+			for(var i in p){
 				findKey = i || '';
 				findValue = p[i] || '';
 				if (findKey) {
 					r[findKey] = findValue;
 				}
-			}	
+			}
 		} else if (Object.prototype.toString.call( r ) === '[object Array]') {
 			r.push(p);
 		}
 	};
-	
+
 	if (Object.prototype.toString.call( obj ) === '[object Array]') {
 		for(var i in obj){
 			doit(root, obj[i]);
@@ -401,7 +401,7 @@ cStorage.prototype.add = function(obj) {
 		doit(root, obj);
 	}
 	this.save();
-	
+
 	return this;
 };
 
@@ -534,7 +534,7 @@ cStorage.prototype.getValue = function(decode) {
 *
 *
 * @function getUid
-* @version 0.2.1
+* @version 0.2.2
 *
 * @param {String} key Name of the unique identifier
 *
@@ -545,7 +545,7 @@ cStorage.prototype.getValue = function(decode) {
 
 
 cStorage.prototype.getUid = function(key, deeper) {
-	
+
 	if (!key) {
 		throw new Error('missing function params');
 		return false;
@@ -565,15 +565,15 @@ cStorage.prototype.getUid = function(key, deeper) {
 		}
 	};
 	var allways = function (root, k, value) {
-		if (key == k && typeof value === 'number') {
+		if (key == k) {
 			set(value);
 		}
 	};
 	_helper.loop(root, allways, null, null, null, deeper);
 	if (!ret) {
 		ret = 0
-	}	
-	return ret+1;
+	}
+	return parseInt(ret)+1;
 };
 
 
@@ -612,11 +612,11 @@ cStorage.prototype.getUid = function(key, deeper) {
 
 
 cStorage.prototype.toString = function(root, decode, deeper) {
-	return JSON.stringify( this.get(root, decode, deeper) );	
+	return JSON.stringify( this.get(root, decode, deeper) );
 };
 
 
- 
+
 /**
 * Return true if Main-Data-Object is empty
 *
@@ -649,7 +649,7 @@ cStorage.prototype.isEmpty = function() {
 
 /**
 * Return true if last Search was successful
-* ( functions: root(), find() ) 
+* ( functions: root(), find() )
 *
 * ### Examples:
 *
@@ -683,19 +683,19 @@ cStorage.prototype.isFound = function() {
 
 
 var _helper = {
-	
+
 	getStorage: function(name) {
-		
+
 		var localDb = window.localStorage.getItem(name) || '{}';
 		var obj = {};
-		
+
 		try{
 			obj = JSON.parse(localDb);
-			if (typeof obj === 'object') {		
+			if (typeof obj === 'object') {
 				return obj;
-			} 
+			}
 			return {};
-			
+
 		} catch(e){
 	        throw new Error('non well formed json string');
 	        return {};
@@ -714,7 +714,7 @@ var _helper = {
 		}
 		return str;
 	},
-	
+
 	getRootObjFromString: function (obj, root) {
 		if (!obj) {
 			return false;
@@ -730,10 +730,10 @@ var _helper = {
 		//console.log(loopRoot);
 		return loopRoot;
 	},
-	
+
 	loop: function (root, allways, foundSelector, found, returnThat, deeper) {
-	
-		
+
+
 		var rootTyp;
 		if (Object.prototype.toString.call( root ) === '[object Object]') {
 			rootTyp = 'object';
@@ -742,12 +742,12 @@ var _helper = {
 		} else {
 			return false;
 		}
-	
+
 		for (var k in root) {
 			if (root.hasOwnProperty(k)) {
-				
+
 				//console.log(key + " -> " + root[k]);
-				
+
 				if(allways){
 					//console.log(allways);
 					var back = allways(root, k, root[k]);
@@ -755,7 +755,7 @@ var _helper = {
 						root[k] = back;
 					}
 				}
-				
+
 				if (typeof root[k] === 'object') {
 					//console.log('--- get deeper');
 					if (deeper) {
@@ -764,9 +764,9 @@ var _helper = {
 							return retDeep;
 						}
 					}
-					
-				} 
-					
+
+				}
+
 				if(found){
 					if (rootTyp == 'object') {
 						if (foundSelector.key && foundSelector.value && k == foundSelector.key && root[k] == foundSelector.value) {
@@ -780,16 +780,15 @@ var _helper = {
 				}
 			}
 		}
-		
+
 		if (returnThat) {
 			return returnThat;
 		} else {
 			return false;
 		}
-		
-		
-		
-	}
-	
-};
 
+
+
+	}
+
+};

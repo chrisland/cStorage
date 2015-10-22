@@ -1525,6 +1525,9 @@ describe("storage", function() {
 
 
 
+
+
+
 	describe("remove()", function() {
 
 
@@ -1552,6 +1555,13 @@ describe("storage", function() {
 		});
 
 	});
+
+
+
+
+
+
+
 
 
 	describe("add()", function() {

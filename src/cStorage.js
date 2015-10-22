@@ -48,7 +48,7 @@ function cStorage(dbname, rootString) {
 
 		this._foundParent = this.root(rootString)._foundParent;
 		this._foundChild = false;
-    this._foundKey = false;
+    this._foundPath = false;
 
 		this._isFound = false;
 
@@ -138,6 +138,7 @@ cStorage.prototype.root = function(root){
 		var loopRoot = _helper.getRootObjFromString(this._data, root);
 		if (loopRoot) {
 			this._foundParent = loopRoot;
+			this._foundPath = root.split('.');
 			this._isFound = true;
 		}
 	}
@@ -199,17 +200,26 @@ cStorage.prototype.find = function(param, deeper) {
 
 	that._isFound = false;
 
-	return _helper.loop(root, null, {key:findKey, value:findValue}, function (parent, child, key) {
+	// var path = [];
+	// var alwaysFound = function (a,b,c) {
+	// 	console.log('LOOP!', a, b, c);
+	// 	//###path.push(b);
+	// };
 
-    console.log('callback');
+	_helper.loop(root, null, {key:findKey, value:findValue}, function (parent, child, path) {
+
+    console.log('callback','parent',parent, 'child',child, 'path',path);
 		that._foundParent = parent;
 		that._foundChild = child;
-    that._foundKey = key;
+    	that._foundPath = path;
 
 		that._isFound = true;
 
-		return that;
+		//console.log(that);
+		//return that;
 	}, that, deeper);
+
+	return this;
 
 };
 
@@ -443,20 +453,56 @@ cStorage.prototype.add = function(obj) {
 
 cStorage.prototype.remove = function() {
 
-	if (Object.prototype.toString.call( this._foundParent ) === '[object Array]') {
-		console.log('array!');
-    console.log(this._foundParent.indexOf());
-    return this;
-	} else if (Object.prototype.toString.call( this._foundParent ) === '[object Object]') {
-		console.log('object!',this._foundParent, this._foundChild, this._foundKey);
+	console.log('REMOVE --------------------!');
+
+
     //delete this._foundParent;
     //alert(this._foundParent.indexOf);
-    delete this._data[this._foundKey];
-    return this;
+    //delete this._data.data[0];
+	if (!this._foundPath && this._foundParent) {
+		return false;
+	}
+	var root = JSON.parse(JSON.stringify(this._foundPath));
+	var first = root.pop();
+	//var second = root.pop();
+	root = root.join('.');
+
+	console.log('_foundPath',this._foundPath);
+	console.log('_foundParent',this._foundParent);
+	console.log('first',first);
+	//console.log('second', second);
+	console.log('root', root);
+
+	console.log('1: data',JSON.parse(JSON.stringify(this._data)));
+
+	var loopRoot = _helper.getRootObjFromString(this._data, root);
+	if (loopRoot) {
+		console.log('loopRoot',loopRoot);
+
+		if (Object.prototype.toString.call( loopRoot ) === '[object Array]') {
+			console.log('array!', loopRoot, first);
+			//console.log(this._foundParent.indexOf());
+			loopRoot.splice(first,1);
+
+			//return this;
+		} else if (Object.prototype.toString.call( loopRoot ) === '[object Object]') {
+			console.log('object!',loopRoot);
+			delete loopRoot[first];
+		} else {
+			console.log('nothing!');
+			//return this;
+		}
+
+
+
+		console.log('2: data',this._data);
 	} else {
-    console.log('nothing!');
-    return this;
-  }
+		return false;
+	}
+	return this;
+
+
+
   //
 	// if (!obj) {
 	// 	return this;
@@ -786,9 +832,11 @@ var _helper = {
 		return loopRoot;
 	},
 
-	loop: function (root, allways, foundSelector, found, returnThat, deeper, lastPath) {
+	loop: function (root, allways, foundSelector, found, returnThat, deeper, getRootKey, lastPath) {
 
     //console.log('lastPath',lastPath);
+
+		//console.log('alwaysFound', alwaysFound);
 
 		var rootTyp;
 		if (Object.prototype.toString.call( root ) === '[object Object]') {
@@ -799,46 +847,93 @@ var _helper = {
 			return false;
 		}
 
-    var path = lastPath || [];
+
+		var rootKey = false;
+
+    	var path = lastPath || [];
+
+		var i = 0;
 		for (var k in root) {
+			if (i == 0 && !rootKey) {
+				rootKey = getRootKey || k;
+			}
 			if (root.hasOwnProperty(k)) {
 
 				//console.log(key + " -> " + root[k]);
 
 				if(allways){
-					//console.log(allways);
+					//console.log('allways',allways);
 					var back = allways(root, k, root[k]);
 					if (back) {
 						root[k] = back;
 					}
 				}
 
-				if (typeof root[k] === 'object') {
-					//console.log('--- get deeper ', k);
-					if (deeper) {
-						var retDeep = _helper.loop(root[k],allways, foundSelector , found, null, deeper, path);
-						if (retDeep) {
 
-              path.push(k);
-              console.log('found',k, path.reverse().join('.'), retDeep);
+
+				if(found){
+          //console.log(lastPath);
+
+					if (rootTyp == 'object') {
+						if (foundSelector.key && foundSelector.value && k == foundSelector.key && root[k] == foundSelector.value) {
+
+							console.log('found',k,'=',foundSelector.key, ' - ',root[k],'=',foundSelector.value);
+							console.log('set FOUND object !!!', rootKey, k , lastPath);
+							//myFound = true;
+							//found(root, root[k], k);
+							if (lastPath) {
+								return [true,root, root[k], k];
+							} else {
+								return found(root, root[k], k);
+							}
+						}
+					} else if (rootTyp == 'array') {
+						if (foundSelector.value && root[k] == foundSelector.value) {
+
+							console.log('set FOUND array !!!');
+							//myFound = true;
+							//found(root, root[k], k);
+							if (lastPath) {
+								return [true,root, root[k], k];
+							} else {
+								return found(root, root[k], k);
+							}
+
+						}
+					}
+				}
+
+				if (typeof root[k] === 'object') {
+
+					if (deeper) {
+						console.log('--- get deeper ', k, root[k]);
+						var retDeep = _helper.loop(root[k],allways, foundSelector , found, null, deeper, rootKey, path);
+						if (retDeep && retDeep[0] && retDeep[1]) {
+
+              				path.push(k);
+              //console.log('found',k, path.reverse().join('.'), retDeep);
+						//	gpath = path.reverse();
+
+							console.log('--- get higher ', k, root[k], path);
+							console.log(retDeep);
+							//console.log('myFound',myFound);
+							//if (myFound) {
+
+							//}
+
+							if (rootKey == k) {
+								//path = path.reverse();
+								console.log('####   FOUND!!!', rootKey );
+								found(retDeep[1], retDeep[2], path.reverse());
+							}
+
 							return retDeep;
 						}
 					}
 
 				}
 
-				if(found){
-          console.log(lastPath);
-					if (rootTyp == 'object') {
-						if (foundSelector.key && foundSelector.value && k == foundSelector.key && root[k] == foundSelector.value) {
-							return found(root, root[k], path.reverse().join('.') );
-						}
-					} else if (rootTyp == 'array') {
-						if (foundSelector.value && root[k] == foundSelector.value) {
-							return found(root, root[k], path.reverse().join('.'));
-						}
-					}
-				}
+
 			}
 		}
 

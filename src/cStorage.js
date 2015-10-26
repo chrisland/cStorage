@@ -454,12 +454,15 @@ cStorage.prototype.remove = function() {
 	if (loopRoot) {
 		if (Object.prototype.toString.call( loopRoot ) === '[object Array]') {
 			loopRoot.splice(first,1);
+			this.save();
 		} else if (Object.prototype.toString.call( loopRoot ) === '[object Object]') {
 			delete loopRoot[first];
+			this.save();
 		}
 	} else {
 		return false;
 	}
+
 	return this;
 };
 

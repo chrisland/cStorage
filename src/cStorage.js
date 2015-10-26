@@ -2,7 +2,7 @@
  * Easy JS Framework to get / edit localStorage
  *
  * @class cStorage
- * @version 0.2.3
+ * @version 0.2.4
  * @license MIT
  *
  * @author Christian Marienfeld post@chrisand.de
@@ -42,17 +42,11 @@ function cStorage(dbname, rootString) {
 		this._dbname = dbname;
 		this._data = _helper.getStorage(this._dbname);
 
-		//console.log(Object.keys(this._data).length);
-
-
-
 		this._foundParent = this.root(rootString)._foundParent;
 		this._foundChild = false;
     this._foundPath = false;
-
+		this._foundKey = false;
 		this._isFound = false;
-
-
 
 		return this;
 	}
@@ -95,7 +89,7 @@ cStorage.prototype.save = function(obj, encode, deeper) {
 	if (encode){
 		_helper.loop(obj, function (root, k) {
 			return _helper.encode(root[k]);
-		}, null, null, null, deeper);
+		}, deeper);
 	}
 	this._data = this._foundParent = obj;
 	this._isFound = false;
@@ -119,7 +113,7 @@ cStorage.prototype.save = function(obj, encode, deeper) {
 *	storage.root('data.user.4');
 *
 * @function root
-* @version 0.1.0
+* @version 0.2.4
 *
 * @param {String} [root=rootObject] Dot seperated path to get deeper into the object or array
 *
@@ -130,7 +124,13 @@ cStorage.prototype.save = function(obj, encode, deeper) {
 
 
 cStorage.prototype.root = function(root){
+
+	this._foundParent = this._data;
+	this._foundKey = false;
+	this._foundChild = false;
+	this._foundPath = false;
 	this._isFound = false;
+
 	if (!root) {
 		this._foundParent = this._data;
 	} else {
@@ -163,7 +163,7 @@ cStorage.prototype.root = function(root){
 *	storage.find({text:"find this value"});
 *
 * @function find
-* @version 0.1.0
+* @version 0.2.4
 *
 * @param {String} param Selector Object
 * @param {Boolean} [deeper=true] Search deeper into the object
@@ -196,28 +196,22 @@ cStorage.prototype.find = function(param, deeper) {
 	}
 
 	var root = this._foundParent;
-	var that = this;
 
-	that._isFound = false;
+	this._foundParent = false;
+	this._foundKey = false;
+	this._foundChild = false;
+	this._foundPath = false;
+	this._isFound = false;
 
-	// var path = [];
-	// var alwaysFound = function (a,b,c) {
-	// 	console.log('LOOP!', a, b, c);
-	// 	//###path.push(b);
-	// };
+	var ret = _helper.find(root, {key:findKey, value:findValue}, deeper);
 
-	_helper.loop(root, null, {key:findKey, value:findValue}, function (parent, child, path) {
-
-    console.log('callback','parent',parent, 'child',child, 'path',path);
-		that._foundParent = parent;
-		that._foundChild = child;
-    	that._foundPath = path;
-
-		that._isFound = true;
-
-		//console.log(that);
-		//return that;
-	}, that, deeper);
+	if (ret) {
+		this._foundParent = ret[1];
+		this._foundKey = ret[2];
+		this._foundChild = ret[3];
+		this._foundPath = ret[4];
+		this._isFound = true;
+	}
 
 	return this;
 
@@ -268,7 +262,7 @@ cStorage.prototype.get = function(root, decode, deeper) {
 		}
 		_helper.loop(obj, function (root, k) {
 			return _helper.decode(root[k]);
-		}, null, null, null, deeper);
+		}, deeper);
 	}
 	return obj;
 };
@@ -431,17 +425,13 @@ cStorage.prototype.add = function(obj) {
 *
 *	var storage = new cStorage('test');
 *
-*	storage.root('data').edit({value:6});
+*	storage.root('data').remove();
 *
-*	storage.find({id:1}).edit({data:'new Data'});
+*	storage.find({id:1}).remove();
 *
-*	storage.find({id:2}).edit({
-*		text:'HERE IS AN NEW WORLD',
-*		lang: 'The new World'
-*	});
 *
 * @function remove
-* @version 0.2.3
+* @version 0.2.4
 *
 *
 * @return {Object} cStorage Object
@@ -453,71 +443,24 @@ cStorage.prototype.add = function(obj) {
 
 cStorage.prototype.remove = function() {
 
-	console.log('REMOVE --------------------!');
-
-
-    //delete this._foundParent;
-    //alert(this._foundParent.indexOf);
-    //delete this._data.data[0];
 	if (!this._foundPath && this._foundParent) {
 		return false;
 	}
 	var root = JSON.parse(JSON.stringify(this._foundPath));
 	var first = root.pop();
-	//var second = root.pop();
 	root = root.join('.');
-
-	console.log('_foundPath',this._foundPath);
-	console.log('_foundParent',this._foundParent);
-	console.log('first',first);
-	//console.log('second', second);
-	console.log('root', root);
-
-	console.log('1: data',JSON.parse(JSON.stringify(this._data)));
 
 	var loopRoot = _helper.getRootObjFromString(this._data, root);
 	if (loopRoot) {
-		console.log('loopRoot',loopRoot);
-
 		if (Object.prototype.toString.call( loopRoot ) === '[object Array]') {
-			console.log('array!', loopRoot, first);
-			//console.log(this._foundParent.indexOf());
 			loopRoot.splice(first,1);
-
-			//return this;
 		} else if (Object.prototype.toString.call( loopRoot ) === '[object Object]') {
-			console.log('object!',loopRoot);
 			delete loopRoot[first];
-		} else {
-			console.log('nothing!');
-			//return this;
 		}
-
-
-
-		console.log('2: data',this._data);
 	} else {
 		return false;
 	}
 	return this;
-
-
-
-  //
-	// if (!obj) {
-	// 	return this;
-	// }
-	// var findKey, findKey;
-	// for(var i in obj){
-	// 	findKey = i || '';
-	// 	findValue = obj[i] || '';
-	// 	if (findKey) {
-	// 		this._foundParent[findKey] = findValue;
-	// 	}
-	// }
-	// this.save();
-  //this.save();
-	//return this;
 };
 
 
@@ -545,7 +488,7 @@ cStorage.prototype.remove = function() {
 *
 *
 * @function map
-* @version 0.1.0
+* @version 0.2.4
 *
 * @param {Function} callback Call this function each note
 * @param {Boolean} [deeper=true] Search deeper into the object
@@ -565,7 +508,8 @@ cStorage.prototype.map = function(callback, deeper) {
 	if (deeper == undefined) {
 		deeper = true;
 	}
-	return _helper.loop(this._foundParent, callback, null,null, this, deeper);
+	_helper.loop(this._foundParent, callback, deeper);
+	return this;
 };
 
 
@@ -634,7 +578,7 @@ cStorage.prototype.getValue = function(decode) {
 *
 *
 * @function getUid
-* @version 0.2.2
+* @version 0.2.4
 *
 * @param {String} key Name of the unique identifier
 *
@@ -669,11 +613,10 @@ cStorage.prototype.getUid = function(key, deeper) {
 			set(value);
 		}
 	};
-	_helper.loop(root, allways, null, null, null, deeper);
+	_helper.loop(root, allways, deeper);
 	if (!ret || isNaN(ret)) {
 		ret = 0
 	}
-
 	return parseInt(ret)+1;
 };
 
@@ -827,16 +770,44 @@ var _helper = {
 				loopRoot = loopRoot[root[i]];
 			}
 		}
-		//console.log('_helper.getRootObjFromString');
-		//console.log(loopRoot);
 		return loopRoot;
 	},
+	find: function (obj, selector, deeper, loopPath) {
 
-	loop: function (root, allways, foundSelector, found, returnThat, deeper, getRootKey, lastPath) {
+		var rootTyp;
+		if (Object.prototype.toString.call( obj ) === '[object Object]') {
+			rootTyp = 'object';
+		} else if (Object.prototype.toString.call( obj ) === '[object Array]') {
+			rootTyp = 'array';
+		} else {
+			return false;
+		}
 
-    //console.log('lastPath',lastPath);
+		var path = loopPath || [];
 
-		//console.log('alwaysFound', alwaysFound);
+		for (var k in obj) {
+			if (obj.hasOwnProperty(k)) {
+				if (rootTyp == 'object') {
+					if (selector.key && selector.value && k == selector.key && obj[k] == selector.value) {
+						return [true,obj,k,obj[k],path];
+					}
+				} else if (rootTyp == 'array') {
+					if (selector.value && obj[k] == selector.value) {
+						return [true,obj,k,obj[k],path];
+					}
+				}
+				if ( typeof obj[k] === 'object' && deeper) {
+					var ret = _helper.find(obj[k], selector, deeper, path);
+					if (ret && ret[0]) {
+						path.unshift(k);
+						return [true,ret[1],ret[2],ret[3],ret[4]];
+					}
+				}
+			}
+		}
+
+	},
+	loop: function (root, allways, deeper) {
 
 		var rootTyp;
 		if (Object.prototype.toString.call( root ) === '[object Object]') {
@@ -847,104 +818,22 @@ var _helper = {
 			return false;
 		}
 
-
-		var rootKey = false;
-
-    	var path = lastPath || [];
-
-		var i = 0;
 		for (var k in root) {
-			if (i == 0 && !rootKey) {
-				rootKey = getRootKey || k;
-			}
 			if (root.hasOwnProperty(k)) {
 
-				//console.log(key + " -> " + root[k]);
-
 				if(allways){
-					//console.log('allways',allways);
 					var back = allways(root, k, root[k]);
 					if (back) {
 						root[k] = back;
 					}
 				}
 
-
-
-				if(found){
-          //console.log(lastPath);
-
-					if (rootTyp == 'object') {
-						if (foundSelector.key && foundSelector.value && k == foundSelector.key && root[k] == foundSelector.value) {
-
-							console.log('found',k,'=',foundSelector.key, ' - ',root[k],'=',foundSelector.value);
-							console.log('set FOUND object !!!', rootKey, k , lastPath);
-							//myFound = true;
-							//found(root, root[k], k);
-							if (lastPath) {
-								return [true,root, root[k], k];
-							} else {
-								return found(root, root[k], k);
-							}
-						}
-					} else if (rootTyp == 'array') {
-						if (foundSelector.value && root[k] == foundSelector.value) {
-
-							console.log('set FOUND array !!!');
-							//myFound = true;
-							//found(root, root[k], k);
-							if (lastPath) {
-								return [true,root, root[k], k];
-							} else {
-								return found(root, root[k], k);
-							}
-
-						}
-					}
+				if (typeof root[k] === 'object' && deeper) {
+					_helper.loop(root[k],allways, deeper);
 				}
-
-				if (typeof root[k] === 'object') {
-
-					if (deeper) {
-						console.log('--- get deeper ', k, root[k]);
-						var retDeep = _helper.loop(root[k],allways, foundSelector , found, null, deeper, rootKey, path);
-						if (retDeep && retDeep[0] && retDeep[1]) {
-
-              				path.push(k);
-              //console.log('found',k, path.reverse().join('.'), retDeep);
-						//	gpath = path.reverse();
-
-							console.log('--- get higher ', k, root[k], path);
-							console.log(retDeep);
-							//console.log('myFound',myFound);
-							//if (myFound) {
-
-							//}
-
-							if (rootKey == k) {
-								//path = path.reverse();
-								console.log('####   FOUND!!!', rootKey );
-								found(retDeep[1], retDeep[2], path.reverse());
-							}
-
-							return retDeep;
-						}
-					}
-
-				}
-
-
 			}
 		}
-
-		if (returnThat) {
-			return returnThat;
-		} else {
-			return false;
-		}
-
-
-
+		return false;
 	}
 
 };

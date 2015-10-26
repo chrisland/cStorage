@@ -1429,21 +1429,23 @@ describe("storage", function() {
 
 
 
-		it("getUid() should return next uid-number after find() an array", function () {
+		it("getUid() should return next uid-number after root() to an array", function () {
 
 
 			//console.log('####   TEST 1');
 
-			var obj = {a:1, data:[{id:5,text:'a',lang:'de'}], b:3};
+			var obj = {a:1, data:[{id:1,text:'a',lang:'de'},{id:2,text:'b',lang:'de'},{id:5,text:'c',lang:'de'}], b:3};
 
 			var storage = new cStorage(dbname).save(obj);
 
 
-			var uid = storage.find({id:1}).getUid('id');
+			var uid = storage.root('data');
+			//console.log( uid.get() );
+			var id = uid.getUid('id');
 			//var back = storage.edit();
 			//console.log(uid);
 
-			expect(uid).toBe(6);
+			expect(id).toBe(6);
 		});
 
 
@@ -1541,6 +1543,24 @@ describe("storage", function() {
 		it("remove() should remove root object",function() {
 
 			var obj = {a:1, data:[{id:1,text:'a',lang:'de'},{id:2,text:'b',lang:'en'},{id:3,text:'c',lang:'it'}], b:{dd:55}};
+			var obj = {};
+		//	var obj = {a:1, b:2, c:3};
+
+			var storage = new cStorage(dbname).save(obj);
+
+			//var get = storage.root('data').add().get();
+
+			storage.remove();
+
+			expect(storage._data).toEqual(obj);
+
+		});
+
+
+		it("remove() should remove object after find() child object ",function() {
+
+			var obj = {a:1, data:[{id:1,text:'a',lang:'de'},{id:2,text:'b',lang:'en'},{id:3,text:'c',lang:'it'}], b:{dd:55}};
+			var after = {a:1, data:[{id:2,text:'b',lang:'en'},{id:3,text:'c',lang:'it'}], b:{dd:55}};
 
 		//	var obj = {a:1, b:2, c:3};
 
@@ -1550,7 +1570,59 @@ describe("storage", function() {
 
 			storage.find({'id':1}).remove();
 
-			expect(storage._data).toEqual();
+			expect(storage._data).toEqual(after);
+
+		});
+
+		it("remove() should remove object after find() child array ",function() {
+
+			var obj = {a:1, data:[1,2,3,4,5], b:{dd:55}};
+			var after = {a:1, data:[1,2,4,5], b:{dd:55}};
+
+		//	var obj = {a:1, b:2, c:3};
+
+			var storage = new cStorage(dbname).save(obj);
+
+			//var get = storage.root('data').add().get();
+
+			storage.root('data.2').remove();
+			expect(storage._data).toEqual(after);
+
+		});
+
+
+		it("remove() should remove object after root() an array ",function() {
+
+			var obj = {a:1, data:[{id:1,text:'a',lang:'de'},{id:2,text:'b',lang:'en'},{id:3,text:'c',lang:'it'}], b:{dd:55}};
+			var after = {a:1, b:{dd:55}};
+
+		//	var obj = {a:1, b:2, c:3};
+
+			var storage = new cStorage(dbname).save(obj);
+
+			//var get = storage.root('data').add().get();
+
+			storage.root('data').remove();
+
+			expect(storage._data).toEqual(after);
+
+		});
+
+
+		it("remove() should remove object after root() an object ",function() {
+
+			var obj = {a:1, data:[{id:1,text:'a',lang:'de'},{id:2,text:'b',lang:'en'},{id:3,text:'c',lang:'it'}], b:{dd:55}};
+			var after = {a:1, data:[{id:1,text:'a',lang:'de'},{id:2,text:'b',lang:'en'},{id:3,text:'c',lang:'it'}]};
+
+		//	var obj = {a:1, b:2, c:3};
+
+			var storage = new cStorage(dbname).save(obj);
+
+			//var get = storage.root('data').add().get();
+
+			storage.root('b').remove();
+
+			expect(storage._data).toEqual(after);
 
 		});
 

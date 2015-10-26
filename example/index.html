@@ -14,33 +14,23 @@
 	<script type="text/javascript">
 
 
+  var obj = {"data":[{"id":1},{"id":2},{"id":3}]};
 
-    var obj = {"test":"test","id":4,"text":"there is content"};
-    //var obj = [3,4,5,'a','b'];
+  var storage = new cStorage('test');
 
-    var storage = new cStorage('test').save(obj);
-    var found = storage.find({test:"test"});
-    console.log('--------------------');
-    var found = storage.find({id:4});
+  storage.save(obj);
 
+  var item = storage.root('data').find({id:2});
 
-	 var obj = {"data":[{"id":1},{"user":[{"blubb":{"a":[{"id":4},{"id":5}],"b":{"id":2}}}]},{"id":3}]};
-    // //var obj = {"data":[{"id":1},{"user":"aaa","text":"bbb"},{"id":3}]};
-    //
-     var storage = new cStorage('test').save(obj);
-    //
+	var myItemObject = item.get();
 
-var item = storage.find({'id':4});
-//var item = storage.root('data.1.user').remove();
+  console.log( get );
 
-	// var item = storage.root('data').find({id:2});
-	//
-	// var myItemObject = item.get();
-	//
-	// item.edit({name:"Hello World"});
-	//
-	// var json = storage.toString();
+	item.edit({name:"Hello World"});
+
+	var json = storage.toString();
 	// json = {"data":[{"id":1},{"id":2,"name":"Hello World"},{"id":3}]}
+  console.log( json );
 
 	</script>
 

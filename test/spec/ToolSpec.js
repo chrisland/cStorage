@@ -1557,7 +1557,7 @@ describe("storage", function() {
 		});
 
 
-		it("remove() should remove object after find() child object ",function() {
+		it("remove() should remove object after find() child object 1",function() {
 
 			var obj = {a:1, data:[{id:1,text:'a',lang:'de'},{id:2,text:'b',lang:'en'},{id:3,text:'c',lang:'it'}], b:{dd:55}};
 			var after = {a:1, data:[{id:2,text:'b',lang:'en'},{id:3,text:'c',lang:'it'}], b:{dd:55}};
@@ -1573,6 +1573,30 @@ describe("storage", function() {
 			expect(storage._data).toEqual(after);
 
 		});
+
+
+		it("remove() should remove object after find() child object 2",function() {
+
+			var obj = {"list":[{"name":"undefinied","path":"","ext":"css","source":"","modules":{},"content":"","id":1},{"name":"undefinied","path":"","ext":"css","source":"","modules":{},"content":"","id":2},{"name":"undefinied","path":"","ext":"css","source":"","modules":{},"content":"","id":3},{"name":"undefinied","path":"","ext":"css","source":"","modules":{},"content":"","id":4}]};
+			var after = {"list":[{"name":"undefinied","path":"","ext":"css","source":"","modules":{},"content":"","id":1},{"name":"undefinied","path":"","ext":"css","source":"","modules":{},"content":"","id":3},{"name":"undefinied","path":"","ext":"css","source":"","modules":{},"content":"","id":4}]};
+
+		//	var obj = {a:1, b:2, c:3};
+
+			var storage = new cStorage(dbname).save(obj);
+
+			//var get = storage.root('data').add().get();
+
+			storage.find({id:2}).remove();
+
+			expect(storage._data).toEqual(after);
+
+			console.log(storage._data);
+		});
+
+
+
+
+
 
 		it("remove() should remove object after find() child array ",function() {
 

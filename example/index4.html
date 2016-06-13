@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Example</title>
+
+  <script src="../src/cStorage.js"></script>
+
+
+</head>
+
+<body>
+
+	<script type="text/javascript">
+
+
+  var obj = {"system":{},"css":{"tabs":[{"name":"aaa","id":1,"rules":[]},{"name":"bbb","id":2,"rules":[]}]}};
+
+  var storage = new cStorage('test');
+
+  storage.save(obj);
+
+  var item = storage.root('css.tabs').find({id:1});
+
+  console.log('### item:', item.get() );
+
+	// var myItemObject = item.get();
+
+  // console.log('###', myItemObject );
+
+   var c = item.child('rules');
+
+   console.log('### child:', c.get() );
+
+  c.add({name:'new!!!"dd"'}, true);
+   console.log('### storage', storage.get() );
+
+
+
+	</script>
+
+
+</body>
+</html>

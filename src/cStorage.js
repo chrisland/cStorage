@@ -2,7 +2,7 @@
  * Easy JS Framework to get / edit localStorage
  *
  * @class cStorage
- * @version 0.2.5
+ * @version 0.2.6
  * @license MIT
  *
  * @author Christian Marienfeld post@chrisand.de
@@ -140,6 +140,58 @@ cStorage.prototype.root = function(root){
 			this._isFound = true;
 		}
 	}
+	return this;
+};
+
+
+
+/**
+* Navigate into a Child-Object
+*
+* ### Examples:
+*
+*	var storage = new cStorage('test');
+*
+*	storage.root('data').child('users');
+*	storage.root('data').find({id: 1}).child('details').get();
+*
+* @function child
+* @version 0.2.6
+*
+* @param {String} [query=rootObject] Dot seperated path to get deeper into the object or array
+*
+* @return {Object} cStorage Object
+*
+* @api public
+*/
+
+
+cStorage.prototype.child = function(query, deeper){
+
+	if (!query) {
+		return false;
+	}
+
+	if (deeper == undefined) {
+		deeper = true;
+	}
+
+	//var root = this._foundParent;
+	//this._foundParent = false;
+	this._foundKey = false;
+	this._foundChild = false;
+	//this._foundPath = [];
+	this._isFound = false;
+
+	//if (root) {
+		var loopRoot = _helper.getRootObjFromString(this._foundParent, query);
+		if (loopRoot) {
+			this._foundParent = loopRoot;
+			this._foundPath = this._foundPath.concat(query.split('.'));
+			this._isFound = true;
+		}
+
+	//}
 	return this;
 };
 
@@ -364,7 +416,7 @@ cStorage.prototype.edit = function(obj) {
 *
 *
 * @function add
-* @version 0.1.0
+* @version 0.2.6
 *
 * @param {Object} obj Object to insert
 *
@@ -374,12 +426,21 @@ cStorage.prototype.edit = function(obj) {
 */
 
 
-cStorage.prototype.add = function(obj) {
+cStorage.prototype.add = function(obj, encode, deeperEncode) {
 	if (!obj) {
 		return this;
 	}
+	if (!deeperEncode) {
+		deeperEncode = true;
+	}
 	var root = this._foundParent;
 	var that = this;
+
+	if (encode){
+		_helper.loop(obj, function (root, k) {
+			return _helper.encode(root[k]);
+		}, deeperEncode);
+	}
 
 	var doit = function (r,p) {
 		if (Object.prototype.toString.call( r ) === '[object Object]') {
@@ -782,6 +843,8 @@ var _helper = {
 			return false;
 		}
 
+
+
 		var path = loopPath || [];
 
 		for (var k in obj) {
@@ -804,7 +867,7 @@ var _helper = {
 				}
 			}
 		}
-
+		return false;
 	},
 	loop: function (root, allways, deeper) {
 

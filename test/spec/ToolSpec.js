@@ -1559,7 +1559,7 @@ describe("storage", function() {
 
 		it("remove() should remove object after find() child object 1",function() {
 
-			var obj = {a:1, data:[{id:1,text:'a',lang:'de'},{id:2,text:'b',lang:'en'},{id:3,text:'c',lang:'it'}], b:{dd:55}};
+			var obj = 	{a:1, data:[{id:1,text:'a',lang:'de'},{id:2,text:'b',lang:'en'},{id:3,text:'c',lang:'it'}], b:{dd:55}};
 			var after = {a:1, data:[{id:2,text:'b',lang:'en'},{id:3,text:'c',lang:'it'}], b:{dd:55}};
 
 		//	var obj = {a:1, b:2, c:3};
@@ -1568,8 +1568,10 @@ describe("storage", function() {
 
 			//var get = storage.root('data').add().get();
 
-			storage.find({'id':1}).remove();
+			var item = storage.root('data').find({'id':1});
+			item.remove();
 
+console.log(storage._data, after);
 			expect(storage._data).toEqual(after);
 
 		});
@@ -1586,7 +1588,7 @@ describe("storage", function() {
 
 			//var get = storage.root('data').add().get();
 
-			storage.find({id:2}).remove();
+			storage.find({id:2}, true).remove();
 
 			expect(storage._data).toEqual(after);
 

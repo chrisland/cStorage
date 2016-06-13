@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Example</title>
+
+  <script src="../src/cStorage.js"></script>
+
+
+</head>
+
+<body>
+
+	<script type="text/javascript">
+
+  var obj = 	{a:1, data:[{id:1,text:'a',lang:'de'},{id:2,text:'b',lang:'en'},{id:3,text:'c',lang:'it'}], b:{dd:55}};
+  var after = {a:1, data:[{id:2,text:'b',lang:'en'},{id:3,text:'c',lang:'it'}], b:{dd:55}};
+
+//	var obj = {a:1, b:2, c:3};
+
+  var storage = new cStorage('dbname').save(obj);
+
+  //var get = storage.root('data').add().get();
+
+
+  storage.root('data').find({'id':2}).remove();
+
+
+  console.log('### ',storage._data);
+
+	</script>
+
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Example</title>
+
+  <script src="../src/cStorage.js"></script>
+
+
+</head>
+
+<body>
+
+	<script type="text/javascript">
+
+
+  var obj = {"system":{},"css":{"tabs":[{"name":"aaa555aaa","id":5},{"name":"aaa","id":6},{"name":"e","id":7},{"name":"e","id":8},{"name":"e","id":9},{"name":"e","id":10},{"name":"3","id":11},{"name":"4","id":12}]}};
+
+  var storage = new cStorage('test');
+
+  storage.save(obj);
+
+  console.log('###############');
+  var item = storage.root('css.tabs').find({id:5});
+  console.log('####');
+	var myItemObject = item.get();
+
+  console.log('## get 1:', myItemObject );
+
+  console.log('## remove', item.remove() );
+
+  console.log('####');
+  var myItemObject = storage.root('css').find({id:5}).get();
+
+  console.log( '## get 2:',myItemObject );
+
+
+  var item = storage.root('css').find({id:2});
+
+  var myItemObject = item.get();
+
+  console.log( myItemObject );
+
+  item.edit({name:"Hello World"});
+
+
+
+
+	</script>
+
+
+</body>
+</html>

@@ -2,7 +2,7 @@
  * Easy JS Framework to get / edit localStorage
  *
  * @class cStorage
- * @version 0.2.4
+ * @version 0.2.5
  * @license MIT
  *
  * @author Christian Marienfeld post@chrisand.de
@@ -21,15 +21,16 @@
 *	var json = storage.toString();
 *	// json = {"data":[{"id":1},{"id":2,"name":"Hello World"},{"id":3}]}
 *
+* storage.root('data').find({'id':2}).remove(); // return true
 *
- *
- * @param {String} dbname Name of localStorage
- * @param {String} [rootString] Dot seperated path to get deeper into the object or array
- *
- * @return {Object} cStorage Object
+*
+* @param {String} dbname Name of localStorage
+* @param {String} [rootString] Dot seperated path to get deeper into the object or array
+*
+* @return {Object} cStorage Object
 
- * @api public
- */
+* @api public
+*/
 
 
 function cStorage(dbname, rootString) {
@@ -44,7 +45,7 @@ function cStorage(dbname, rootString) {
 
 		this._foundParent = this.root(rootString)._foundParent;
 		this._foundChild = false;
-    this._foundPath = false;
+    this._foundPath = [];
 		this._foundKey = false;
 		this._isFound = false;
 
@@ -124,16 +125,13 @@ cStorage.prototype.save = function(obj, encode, deeper) {
 
 
 cStorage.prototype.root = function(root){
-
 	this._foundParent = this._data;
 	this._foundKey = false;
 	this._foundChild = false;
-	this._foundPath = false;
+	this._foundPath = [];
 	this._isFound = false;
 
-	if (!root) {
-		this._foundParent = this._data;
-	} else {
+	if (root) {
 
 		var loopRoot = _helper.getRootObjFromString(this._data, root);
 		if (loopRoot) {
@@ -196,23 +194,20 @@ cStorage.prototype.find = function(param, deeper) {
 	}
 
 	var root = this._foundParent;
-
 	this._foundParent = false;
 	this._foundKey = false;
 	this._foundChild = false;
-	this._foundPath = false;
+	//this._foundPath = [];
 	this._isFound = false;
 
 	var ret = _helper.find(root, {key:findKey, value:findValue}, deeper);
-
 	if (ret) {
 		this._foundParent = ret[1];
 		this._foundKey = ret[2];
 		this._foundChild = ret[3];
-		this._foundPath = ret[4];
+		this._foundPath = this._foundPath.concat(ret[4]);
 		this._isFound = true;
 	}
-
 	return this;
 
 };
@@ -443,9 +438,10 @@ cStorage.prototype.add = function(obj) {
 
 cStorage.prototype.remove = function() {
 
-	if (!this._foundPath && this._foundParent) {
+	if ((!this._foundPath || this._foundPath.length < 1 ) && !this._foundParent) {
 		return false;
 	}
+
 	var root = JSON.parse(JSON.stringify(this._foundPath));
 	var first = root.pop();
 	root = root.join('.');

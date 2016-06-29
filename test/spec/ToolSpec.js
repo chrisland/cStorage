@@ -543,8 +543,9 @@ describe("storage", function() {
 			var obj = [3,4,5,'a','b'];
 
 			var storage = new cStorage(dbname).save(obj);
+			console.log('---------------############################################');
 			var found = storage.find(3);
-
+			console.log('---------------############################################');
 			//console.log(found);
 
 			expect(storage._foundChild).toBe(obj[0]);

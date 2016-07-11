@@ -2,7 +2,7 @@
  * Easy JS Framework to get / edit localStorage
  *
  * @class cStorage
- * @version 0.2.8
+ * @version 0.2.9
  * @license MIT
  *
  * @author Christian Marienfeld post@chrisand.de
@@ -576,7 +576,7 @@
 
 
 
-	cStorage.prototype.map = function(callback, deeper) {
+	cStorage.prototype.map = function(callback, deeper, decode) {
 		if (!callback && typeof callback !== 'function') {
 			throw new Error('missing function params');
 			return false;
@@ -584,7 +584,7 @@
 		if (deeper == undefined) {
 			deeper = true;
 		}
-		_helper.loop(this._foundParent, callback, deeper);
+		_helper.loop(this._foundParent, callback, deeper, decode);
 		return this;
 	};
 
@@ -883,7 +883,7 @@
 			}
 			return false;
 		},
-		loop: function (root, allways, deeper) {
+		loop: function (root, allways, deeper, decode) {
 
 			var rootTyp;
 			if (Object.prototype.toString.call( root ) === '[object Object]') {
@@ -898,6 +898,11 @@
 				if (root.hasOwnProperty(k)) {
 
 					if(allways){
+            if (decode) {
+              _helper.loop(root[k], function (decoderoot, decodek) {
+        				return _helper.decode(decoderoot[decodek]);
+        			}, deeper);
+            }
 						var back = allways(root, k, root[k]);
 						if (back) {
 							root[k] = back;
@@ -905,7 +910,7 @@
 					}
 
 					if (typeof root[k] === 'object' && deeper) {
-						_helper.loop(root[k],allways, deeper);
+						_helper.loop(root[k],allways, deeper, decode);
 					}
 				}
 			}

@@ -2,7 +2,7 @@
  * Easy JS Framework to get / edit localStorage
  *
  * @class cStorage
- * @version 0.2.9
+ * @version 0.2.10
  * @license MIT
  *
  * @author Christian Marienfeld post@chrisand.de
@@ -848,7 +848,16 @@
 			}
 			return loopRoot;
 		},
-		find: function (obj, selector, deeper, loopPath) {
+		find: function (obj, selector, deeper, loopPath, deeperCount) {
+
+            if (deeper === true) {
+                deeper = 999;
+            }
+            if (deeperCount == undefined) {
+                deeperCount = 0;
+            } else {
+                deeperCount++;
+            }
 
 			var rootTyp;
 			if (Object.prototype.toString.call( obj ) === '[object Object]') {
@@ -872,8 +881,8 @@
 							return [true,obj,k,obj[k],path];
 						}
 					}
-					if ( typeof obj[k] === 'object' && deeper) {
-						var ret = _helper.find(obj[k], selector, deeper, path);
+					if ( typeof obj[k] === 'object' && deeper && deeper >= deeperCount) {
+						var ret = _helper.find(obj[k], selector, deeper, path, deeperCount);
 						if (ret && ret[0]) {
 							path.unshift(k);
 							return [true,ret[1],ret[2],ret[3],ret[4]];

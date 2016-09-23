@@ -13,8 +13,44 @@
 
 	<script type="text/javascript">
 
-  var obj = 	{a:1, data:[{id:1,text:'a',lang:'de'},{id:2,text:'b',lang:'en'},{id:3,text:'c',lang:'it'}], b:{dd:55}};
-  var after = {a:1, data:[{id:2,text:'b',lang:'en'},{id:3,text:'c',lang:'it'}], b:{dd:55}};
+  var obj = 	{
+                    a:1,
+                    data:[
+                        {
+                            id:1,
+                            text:'a',
+                            lang:'de'
+                        },
+                        {
+                            id:2,
+                            text:'b',
+                            lang:'en',
+                            childs: [
+                                {
+                                    id: 66,
+                                    name: 'c1'
+                                },
+                                {
+                                    id: 3,
+                                    name: 'c2'
+                                },
+                                {
+                                    id: 77,
+                                    name: 'c2'
+                                }
+                            ]
+                        },
+                        {
+                            id:3,
+                            text:'root ebene',
+                            lang:'it'
+                        }
+                    ],
+                    b:{
+                        dd:55
+                    }
+                };
+  var after =   {a:1, data:[{id:2,text:'b',lang:'en'},{id:3,text:'c',lang:'it'}], b:{dd:55}};
 
 //	var obj = {a:1, b:2, c:3};
 
@@ -23,10 +59,12 @@
   //var get = storage.root('data').add().get();
 
 
-  storage.root('data').find({'id':2}).remove();
+  var data = storage.root('data').find({'id':3}, 1).get();
+
+  //.remove();
 
 
-  console.log('### ',storage._data);
+  console.log('### ',data);
 
 	</script>
 

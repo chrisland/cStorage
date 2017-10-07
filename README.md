@@ -6,7 +6,7 @@
 
 Easy JS Framework to get / edit localStorage
 
-Version: 0.2.0
+Version: 0.2.10
 
 Author: Christian Marienfeld post@chrisand.de 
 
@@ -51,7 +51,7 @@ Initialise the cStorage Object
 
 # Methods:
 
-##### save, root, find, get, clone, edit, add, map, getValue, getUid, toString, isEmpty, isFound
+##### save, root, child, find, get, clone, edit, add, remove, map, getValue, getUid, toString, isEmpty, isFound
 
 
 ###------------------------------------------------------------------
@@ -97,6 +97,31 @@ Version: 0.1.0
 ### Params:
 
 * **String** *[root=rootObject]* Dot seperated path to get deeper into the object or array
+
+### Return:
+
+* **Object** cStorage Object
+
+
+###------------------------------------------------------------------
+
+## child([query=string, deeper=true])
+
+Dot seperated path to get deeper into the object or array
+
+### Examples:
+
+	var storage = new cStorage('test');
+
+	storage.root('data').child('users');
+	storage.root('data').find({id: 1}).child('details').get();
+
+Version: 0.2.6
+
+### Params:
+
+* **String** *[query=string]* Dot seperated path to get deeper into the object or array
+* **Boolean** *[deeper=true]* Search deeper into the object
 
 ### Return:
 
@@ -247,6 +272,26 @@ Version: 0.1.0
 ### Params:
 
 * **Object** *obj* Object to insert
+
+### Return:
+
+* **Object** cStorage Object
+
+###------------------------------------------------------------------
+
+## remove()
+
+Remove the Selected-Data-Object
+
+### Examples:
+
+	var storage = new cStorage('test');
+
+	storage.root('data').remove();
+
+	storage.find({id:1}).remove();
+
+Version: 0.2.4
 
 ### Return:
 

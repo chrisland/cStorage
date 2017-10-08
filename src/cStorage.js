@@ -60,9 +60,10 @@
 
 			this._foundParent = this.root(rootString)._foundParent;
 			this._foundChild = false;
-	    this._foundPath = [];
+	    	this._foundPath = [];
 			this._foundKey = false;
 			this._isFound = false;
+			this._indexOf = false;
 
 			return this;
 		}
@@ -109,6 +110,7 @@
 		}
 		this._data = this._foundParent = obj;
 		this._isFound = false;
+		this._indexOf = false;
 		window.localStorage.setItem(this._dbname, this.toString());
 
 		return this;
@@ -145,6 +147,7 @@
 		this._foundChild = false;
 		this._foundPath = [];
 		this._isFound = false;
+		this._indexOf = false;
 
 		if (root) {
 
@@ -197,6 +200,7 @@
 		this._foundChild = false;
 		//this._foundPath = [];
 		this._isFound = false;
+		this._indexOf = false;
 
 		//if (root) {
 			var loopRoot = _helper.getRootObjFromString(this._foundParent, query);
@@ -266,6 +270,7 @@
 		this._foundChild = false;
 		//this._foundPath = [];
 		this._isFound = false;
+		this._indexOf = false;
 
 		var ret = _helper.find(root, {key:findKey, value:findValue}, deeper);
 		if (ret) {
@@ -801,7 +806,7 @@
 
 	/**
 	* Return index if last Search was successful
-	* ( functions: root(), find() )
+	* ( Works ONLY after: find() )
 	*
 	* ### Examples:
 	*

@@ -6,7 +6,7 @@
 
 Easy JS Framework to get / edit localStorage
 
-Version: 0.2.10
+Version: 0.2.11
 
 Author: Christian Marienfeld post@chrisand.de 
 
@@ -51,7 +51,7 @@ Initialise the cStorage Object
 
 # Methods:
 
-##### save, root, child, find, get, clone, edit, add, remove, map, getValue, getUid, toString, isEmpty, isFound
+##### save, root, child, find, get, clone, edit, add, remove, map, getValue, getUid, toString, isEmpty, isFound, indexOf
 
 
 ###------------------------------------------------------------------
@@ -436,7 +436,7 @@ Version: 0.2.0
 
 ## isFound()
 
-Return true if last Search was successful
+Return true if last search was successful
 ( functions: root(), find() ) 
 
 ### Examples:
@@ -452,6 +452,30 @@ Version: 0.2.0
 ### Return:
 
 * **Boolean** true if last root() or find() was successful
+
+
+###------------------------------------------------------------------
+
+## indexOf()
+
+Return index number if last search was successful
+( Works ONLY after: find() )
+
+### Examples:
+
+	var obj = {"data":[{id:3},{id:6},{id:8}]};
+
+	var storage = new cStorage('test').save(obj);
+
+	var index = storage.find({id: 6}).indexOf();
+
+	console.log(index); // output: 1
+
+Version: 0.2.11
+
+### Return:
+
+* **Number** index number
 
 <!-- End src/cStorage.js -->
 

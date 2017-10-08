@@ -2048,7 +2048,7 @@ describe("storage", function() {
 
 		});
 
-
+		
 		it("indexOf() should retrun first index, simple obj ",function() {
 
 			var obj = {"data":[{id:3},{id:6},{id:8}]};

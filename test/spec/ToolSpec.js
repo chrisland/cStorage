@@ -543,9 +543,9 @@ describe("storage", function() {
 			var obj = [3,4,5,'a','b'];
 
 			var storage = new cStorage(dbname).save(obj);
-			console.log('---------------############################################');
+			//console.log('---------------############################################');
 			var found = storage.find(3);
-			console.log('---------------############################################');
+			//console.log('---------------############################################');
 			//console.log(found);
 
 			expect(storage._foundChild).toBe(obj[0]);
@@ -1572,7 +1572,7 @@ describe("storage", function() {
 			var item = storage.root('data').find({'id':1});
 			item.remove();
 
-console.log(storage._data, after);
+			//console.log(storage._data, after);
 			expect(storage._data).toEqual(after);
 
 		});
@@ -1593,7 +1593,7 @@ console.log(storage._data, after);
 
 			expect(storage._data).toEqual(after);
 
-			console.log(storage._data);
+			//console.log(storage._data);
 		});
 
 
@@ -2039,5 +2039,70 @@ console.log(storage._data, after);
 
 
 
+	describe("indexOf()", function() {
+		
+		
+		beforeEach(function() {
+
+			localStorage.removeItem(dbname);
+
+		});
+
+
+		it("indexOf() should retrun first index, simple obj ",function() {
+
+			var obj = {"data":[{id:3},{id:6},{id:8}]};
+
+			var storage = new cStorage(dbname).save(obj);
+
+			var ret = storage.find({id: 3}).indexOf();
+
+			expect(ret).toEqual(0);
+
+		});
+
+		it("indexOf() should retrun last index, simple obj ",function() {
+			
+			var obj = {"data":[{id:3},{id:6},{id:8}]};
+
+			var storage = new cStorage(dbname).save(obj);
+
+			var ret = storage.find({id: 8}).indexOf();
+
+
+			expect(ret).toEqual(2);
+
+		});
+
+
+		it("indexOf() should retrun index, deeper obj -> root obj ",function() {
+			
+			var obj = {"data":[{id:10},{id:11},{id:12, arr: [{id:44},{id:45},{id:46},{id:47},{id:48},{id:49}]},{id:16},{id:17},{id:20}]};	
+
+			var storage = new cStorage(dbname).save(obj);
+
+			var ret = storage.find({id: 16}).indexOf();
+
+
+			expect(ret).toEqual(3);
+
+		});
+
+		it("indexOf() should retrun index, deeper obj -> deeper item ",function() {
+			
+			var obj = {"data":[{id:10},{id:11, arr: [{id:33}] },{id:12, arr: [{id:44},{id:45},{id:46},{id:47},{id:48},{id:49}]},{id:16},{id:17},{id:20}]};	
+
+			var storage = new cStorage(dbname).save(obj);
+
+			var ret = storage.find({id: 47}).indexOf();
+
+
+			expect(ret).toEqual(3);
+
+		});
+
+
+
+	});
 
 });

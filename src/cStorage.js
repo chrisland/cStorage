@@ -2,7 +2,7 @@
  * Easy JS Framework to get / edit localStorage
  *
  * @class cStorage
- * @version 0.2.10
+ * @version 0.2.11
  * @license MIT
  *
  * @author Christian Marienfeld post@chrisand.de
@@ -13,6 +13,7 @@
 *	var storage = new cStorage('test').save(obj);
 *
 *	var item = storage.root('data').find({id:2});
+*	var index = item.indexOf(); // number
 *
 *	var myItemObject = item.get();
 *
@@ -273,6 +274,7 @@
 			this._foundChild = ret[3];
 			this._foundPath = this._foundPath.concat(ret[4]);
 			this._isFound = true;
+			this._indexOf = ret[5];
 		}
 		return this;
 
@@ -797,6 +799,38 @@
 
 
 
+	/**
+	* Return index if last Search was successful
+	* ( functions: root(), find() )
+	*
+	* ### Examples:
+	*
+	*	var storage = new cStorage('test');
+	*
+	*	var check = storage.find({id:4}).indexOf();
+	*
+	*
+	*
+	* @function indexOf
+	* @version 0.2.11
+	*
+	* @return {Number} index number
+	*
+	* @api public
+	*/
+
+
+	cStorage.prototype.indexOf = function() {
+
+		if (this._isFound && typeof this._indexOf !== "undefined" && !isNaN(this._indexOf) ) {
+			return this._indexOf;
+		}
+		return false;
+	};
+
+
+
+
 
 
 
@@ -848,7 +882,7 @@
 			}
 			return loopRoot;
 		},
-		find: function (obj, selector, deeper, loopPath, deeperCount) {
+		find: function (obj, selector, deeper, loopPath, deeperCount, n) {
 
             if (deeper === true) {
                 deeper = 999;
@@ -869,25 +903,33 @@
 			}
 
 			var path = loopPath || [];
+			var n = n || 0;
 
 			for (var k in obj) {
 				if (obj.hasOwnProperty(k)) {
+					
 					if (rootTyp == 'object') {
 						if (selector.key && selector.value && k == selector.key && obj[k] == selector.value) {
-							return [true,obj,k,obj[k],path];
+							return [true,obj,k,obj[k],path, n ];
 						}
 					} else if (rootTyp == 'array' && selector.key == selector.value ) {
 						if (selector.value && obj[k] == selector.value) {
-							return [true,obj,k,obj[k],path];
+							return [true,obj,k,obj[k],path, n ];
 						}
 					}
 					if ( typeof obj[k] === 'object' && deeper && deeper >= deeperCount) {
-						var ret = _helper.find(obj[k], selector, deeper, path, deeperCount);
+						if (typeof obj[k][0] === 'object' ) {
+							n = 0;
+						}
+						var ret = _helper.find(obj[k], selector, deeper, path, deeperCount, n);
 						if (ret && ret[0]) {
 							path.unshift(k);
-							return [true,ret[1],ret[2],ret[3],ret[4]];
+							return [true,ret[1],ret[2],ret[3],ret[4],ret[5] ];
 						}
 					}
+
+					n++;
+					
 				}
 			}
 			return false;

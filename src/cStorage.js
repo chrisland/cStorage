@@ -444,7 +444,7 @@
 
 
 
-	cStorage.prototype.duplicate = function() {
+	cStorage.prototype.duplicate = function(obj) {
 
 		if ( !this._foundPath || !this._foundParent ) {
 			return this;
@@ -455,7 +455,12 @@
 			if (Object.prototype.toString.call( loopRoot ) === '[object Array]') {
 				var dupli = JSON.parse(JSON.stringify(this._foundParent));
 				if (dupli) {
-					loopRoot.splice(this._indexOf, 0 ,dupli);
+					if (obj) {
+						for(var i in obj){
+							dupli[i] = obj[i];
+						}
+					}
+					loopRoot.splice(this._indexOf+1, 0 ,dupli);
 				}
 			}
 		}

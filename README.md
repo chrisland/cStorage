@@ -277,9 +277,9 @@ Edit the Selected-Data-Object value
 ### ------------------------------------------------------------------
 
 <a name="link-duplicate"></a>
-## duplicate()
+## duplicate([obj={}])
 
-Duplicate the Selected-Data-Object value
+Duplicate the Selected-Data-Object value and optional replace Key/Values
 
 ( Works ONLY after: find() )
 
@@ -291,7 +291,11 @@ Duplicate the Selected-Data-Object value
 
 	storage.root("data").find({id:4}).duplicate();
 
+	storage.root("data").find({id:4}).duplicate({id: 5});
+
 ### Return:
+
+* **Object** *obj* Object with key and new value
 
 * **Object** cStorage Object
 

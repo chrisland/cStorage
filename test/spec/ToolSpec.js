@@ -2155,6 +2155,28 @@ describe("storage", function() {
 		});
 
 
+
+
+		it("duplicate() after find and replace content",function() {
+			
+
+			var obj = {"data":[{id:1},{id:2},{id:3}]};
+			var obj_new = {"data":[{id:1},{id:2},{id:3},{id:8}]};
+
+
+			var storage = new cStorage(dbname).save(obj);
+
+			var ret = storage.root('data').find({'id':3}).duplicate({id:8});
+
+			//var root = storage.root().clone();
+			console.log( JSON.stringify(ret.root().get()) );
+			//console.log(JSON.stringify(obj_new));
+
+			expect( JSON.stringify(ret.root().get()) ).toEqual( JSON.stringify(obj_new) );
+
+		});
+
+
 		
 	});
 

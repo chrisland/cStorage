@@ -1,5 +1,5 @@
 <!-- Start src/cStorage.js -->
-<a name="link-top"></a>
+
 # cStorage
 
 Easy JS Framework to get / edit localStorage
@@ -46,14 +46,38 @@ Initialise the cStorage Object
 
 
 
-
+<a name="link-top"></a>
 # Methods:
 
-##### save, root, child, find, get, clone, edit, add, remove, map, getValue, getUid, toString, isEmpty, isFound, indexOf
-
-- [save](#link-save)
+##### Navigate
 - [root](#link-root)
 - [child](#link-child)
+- [find](#link-find)
+
+##### Data
+- [get](#link-get)
+- [clone](#link-clone)
+
+##### Manipulate
+- [save](#link-save)
+- [add](#link-add)
+- [edit](#link-edit)
+- [remove](#link-remove)
+
+##### Spezial data
+- [getUid](#link-getUid)
+- [getValue](#link-getValue)
+- [toString](#link-toString)
+- [indexOf](#link-indexOf)
+
+##### Loop
+- [map](#link-map)
+
+##### Check
+- [isEmpty](#link-isEmpty)
+- [isFound](#link-isFound)
+
+
 
 
 ### ------------------------------------------------------------------
@@ -69,7 +93,6 @@ Save the Main-Data-Object to the localStorage
 
 	storage.save({my:"test"});
 
-Version: 0.1.0
 
 ### Params:
 
@@ -98,7 +121,6 @@ Navigate into the Main-Data-Object
 	storage.root('data.user');
 	storage.root('data.user.4');
 
-Version: 0.1.0
 
 ### Params:
 
@@ -124,8 +146,6 @@ Dot seperated path to get deeper into the object or array
 	storage.root('data').child('users');
 	storage.root('data').find({id: 1}).child('details').get();
 
-Version: 0.2.6
-
 ### Params:
 
 * **String** *[query=string]* Dot seperated path to get deeper into the object or array
@@ -139,7 +159,7 @@ Version: 0.2.6
 
 ### ------------------------------------------------------------------
 
-
+<a name="link-find"></a>
 ## find(param, [deeper=true])
 
 Find Note from Selected-Data-Object
@@ -156,8 +176,6 @@ Find Note from Selected-Data-Object
 
 	storage.find({text:"find this value"});
 
-Version: 0.1.0
-
 ### Params:
 
 * **String** *param* Selector Object
@@ -167,9 +185,11 @@ Version: 0.1.0
 
 * **Object** cStorage Object
 
+[-- back to top --](#link-top)
 
 ### ------------------------------------------------------------------
 
+<a name="link-get"></a>
 ## get([root=rootObject], [decode=false], [deeper=true])
 
 Return the Selected-Data-Object
@@ -188,8 +208,6 @@ Return the Selected-Data-Object
 
 	var get = storage.get('data',true,false); //decode values but not deep
 
-Version: 0.1.0
-
 ### Params:
 
 * **String** *[root=rootObject]* Dot seperated path to get deeper into the object or array
@@ -200,9 +218,11 @@ Version: 0.1.0
 
 * **Object** Note object
 
+[-- back to top --](#link-top)
 
 ### ------------------------------------------------------------------
 
+<a name="link-clone"></a>
 ## clone()
 
 Return a clone of the Selected-Data-Object
@@ -217,15 +237,15 @@ Return a clone of the Selected-Data-Object
 
 	var clone = storage.root('data').find({id:6}).clone();
 
-Version: 0.1.0
-
 ### Return:
 
 * **Object** Cloned note object
 
+[-- back to top --](#link-top)
 
 ### ------------------------------------------------------------------
 
+<a name="link-edit"></a>
 ## edit(obj)
 
 Edit the Selected-Data-Object value
@@ -243,8 +263,6 @@ Edit the Selected-Data-Object value
 		lang: 'The new World'
 	});
 
-Version: 0.1.0
-
 ### Params:
 
 * **Object** *obj* Object with key and new value
@@ -253,9 +271,11 @@ Version: 0.1.0
 
 * **Object** cStorage Object
 
+[-- back to top --](#link-top)
 
 ### ------------------------------------------------------------------
 
+<a name="link-add"></a>
 ## add(obj)
 
 Add to the Selected-Data-Object
@@ -276,8 +296,6 @@ Add to the Selected-Data-Object
 
 	storage.root('data').add([{id:4},{id:5}]);
 
-Version: 0.1.0
-
 ### Params:
 
 * **Object** *obj* Object to insert
@@ -286,8 +304,11 @@ Version: 0.1.0
 
 * **Object** cStorage Object
 
+[-- back to top --](#link-top)
+
 ### ------------------------------------------------------------------
 
+<a name="link-remove"></a>
 ## remove()
 
 Remove the Selected-Data-Object
@@ -300,15 +321,15 @@ Remove the Selected-Data-Object
 
 	storage.find({id:1}).remove();
 
-Version: 0.2.4
-
 ### Return:
 
 * **Object** cStorage Object
 
+[-- back to top --](#link-top)
 
 ### ------------------------------------------------------------------
 
+<a name="link-map"></a>
 ## map(callback, [deeper=true])
 
 Loop to the Selected-Data-Object
@@ -329,8 +350,6 @@ Loop to the Selected-Data-Object
 		console.log(obj, key, value);
 	}, false);
 
-Version: 0.1.0
-
 ### Params:
 
 * **Function** *callback* Call this function each note
@@ -340,9 +359,11 @@ Version: 0.1.0
 
 * **Object** cStorage Object
 
+[-- back to top --](#link-top)
 
 ### ------------------------------------------------------------------
 
+<a name="link-getValue"></a>
 ## getValue([decode=false])
 
 Return the Selected-Data-Value
@@ -355,8 +376,6 @@ Return the Selected-Data-Value
 
 	var json = storage.getValue(true); //decode values
 
-Version: 0.1.0
-
 ### Params:
 
 * **Boolean** *[decode=false]* Decode the value for humanreadable text
@@ -365,9 +384,11 @@ Version: 0.1.0
 
 * **Object** Value Object
 
+[-- back to top --](#link-top)
 
 ### ------------------------------------------------------------------
 
+<a name="link-getUid"></a>
 ## getUid()
 
 Return a unique identifier of the Selected-Data-Object
@@ -382,15 +403,15 @@ Return a unique identifier of the Selected-Data-Object
 
 	var nextId = storage.root('json.data.users').getUid();
 
-Version: 0.1.0
-
 ### Return:
 
 * **Number** a unique identifier as integer
 
+[-- back to top --](#link-top)
 
 ### ------------------------------------------------------------------
 
+<a name="link-toString"></a>
 ## toString([root=rootObject], [decode=false], [deeper=true])
 
 Return the Selected-Data-Object as JSON-String
@@ -409,8 +430,6 @@ Return the Selected-Data-Object as JSON-String
 	var json = storage.root('data').find({id:4}).toString();
 	var json = storage.root('data').find({id:4}).toString(null,true); //decode values
 
-Version: 0.1.0
-
 ### Params:
 
 * **String** *[root=rootObject]* Dot seperated path to get deeper into the object or array
@@ -421,9 +440,11 @@ Version: 0.1.0
 
 * **String** Note Object as JSON-String
 
+[-- back to top --](#link-top)
 
 ### ------------------------------------------------------------------
 
+<a name="link-isEmpty"></a>
 ## isEmpty()
 
 Return true if Main-Data-Object is empty
@@ -434,15 +455,15 @@ Return true if Main-Data-Object is empty
 
 	var check = storage.isEmpty();
 
-Version: 0.2.0
-
 ### Return:
 
 * **Boolean** filled (false) or not filled (true)
 
+[-- back to top --](#link-top)
 
 ### ------------------------------------------------------------------
 
+<a name="link-isFound"></a>
 ## isFound()
 
 Return true if last search was successful
@@ -456,15 +477,15 @@ Return true if last search was successful
 
 	var check = storage.find({id:4}).isFound();
 
-Version: 0.2.0
-
 ### Return:
 
 * **Boolean** true if last root() or find() was successful
 
+[-- back to top --](#link-top)
 
 ### ------------------------------------------------------------------
 
+<a name="link-indexOf"></a>
 ## indexOf()
 
 Return index number if last search was successful
@@ -480,11 +501,10 @@ Return index number if last search was successful
 
 	console.log(index); // output: 1
 
-Version: 0.2.11
-
 ### Return:
 
 * **Number** index number
 
+[-- back to top --](#link-top)
 <!-- End src/cStorage.js -->
 

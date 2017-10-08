@@ -4,7 +4,7 @@
 
 Easy JS Framework to get / edit localStorage
 
-Version: 0.2.11
+Version: 0.2.12
 
 Author: Christian Marienfeld post@chrisand.de 
 
@@ -62,6 +62,7 @@ Initialise the cStorage Object
 - [save](#link-save)
 - [add](#link-add)
 - [edit](#link-edit)
+- [duplicate](#link-duplicate)
 - [remove](#link-remove)
 
 ##### Spezial data
@@ -266,6 +267,29 @@ Edit the Selected-Data-Object value
 ### Params:
 
 * **Object** *obj* Object with key and new value
+
+### Return:
+
+* **Object** cStorage Object
+
+[-- back to top --](#link-top)
+
+### ------------------------------------------------------------------
+
+<a name="link-duplicate"></a>
+## duplicate()
+
+Duplicate the Selected-Data-Object value
+
+( Works ONLY after: find() )
+
+### Examples:
+
+	var storage = new cStorage('test');
+
+	storage.find({id:1}).duplicate();
+
+	storage.root("data").find({id:4}).duplicate();
 
 ### Return:
 

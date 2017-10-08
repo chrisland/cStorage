@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Example</title>
+
+  <script src="../src/cStorage.js"></script>
+
+
+</head>
+
+<body>
+
+	<script type="text/javascript">
+
+
+  //var obj = {"system":{},"css":{"tabs":[{"name":"aaa","id":1,"rules":[]},{"name":"bbb","id":2,"rules":[]}]}};
+
+  var obj = {"data":[{id:10},{id:11},{id:12},{id:13}]};
+
+  //var obj = {"data": {"a":1, "b":2}};
+  
+  var storage = new cStorage('dbname').save(obj);
+  //console.log(storage);
+
+   console.log('------------------------');
+    
+    //var ret = storage.root('data').duplicate();
+    var ret = storage.root('data').find({id: 12}).duplicate();
+    //var ret = storage.root('data').find({a: 1}).duplicate();
+
+    console.log(ret.root().get());
+
+	</script>
+
+
+</body>
+</html>

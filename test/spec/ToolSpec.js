@@ -2105,4 +2105,57 @@ describe("storage", function() {
 
 	});
 
+
+
+	describe("duplicate()", function() {
+		
+		
+		beforeEach(function() {
+
+			localStorage.removeItem(dbname);
+
+		});
+
+		
+		it("duplicate() after find ",function() {
+
+			var obj = {"data":[{id:1},{id:2},{id:3}]};
+			var obj_new = {"data":[{id:1},{id:2},{id:3},{id:3}]};
+
+
+			var storage = new cStorage(dbname).save(obj);
+
+			var ret = storage.root('data').find({'id':3}).duplicate();
+
+			//var root = storage.root().clone();
+			console.log( JSON.stringify(ret.root().get()) );
+			//console.log(JSON.stringify(obj_new));
+
+			expect( JSON.stringify(ret.root().get()) ).toEqual( JSON.stringify(obj_new) );
+
+		});
+
+
+		it("duplicate() after find deeper ",function() {
+			
+			var obj = {"data":[{id:1},{id:2, arr:[{id:4}, {id:5}]},{id:3}]};
+			var obj_new = {"data":[{id:1},{id:2, arr:[{id:4}, {id:5}]},{id:3},{id:3}]};
+
+
+			var storage = new cStorage(dbname).save(obj);
+
+			var ret = storage.root('data').find({'id':3}).duplicate();
+
+			//var root = storage.root().clone();
+			console.log( JSON.stringify(ret.root().get()) );
+			//console.log(JSON.stringify(obj_new));
+
+			expect( JSON.stringify(ret.root().get()) ).toEqual( JSON.stringify(obj_new) );
+
+		});
+
+
+		
+	});
+
 });

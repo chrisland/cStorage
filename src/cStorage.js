@@ -2,7 +2,7 @@
  * Easy JS Framework to get / edit localStorage
  *
  * @class cStorage
- * @version 0.2.11
+ * @version 0.2.12
  * @license MIT
  *
  * @author Christian Marienfeld post@chrisand.de
@@ -156,6 +156,7 @@
 				this._foundParent = loopRoot;
 				this._foundPath = root.split('.');
 				this._isFound = true;
+				this._foundKey = root;
 			}
 		}
 		return this;
@@ -415,6 +416,56 @@
 
 		return this;
 	};
+
+
+
+
+	/**
+	* Duplicate the Selected-Data-Object value
+	*
+	* ### Examples:
+	*
+	*	var storage = new cStorage('test');
+	*
+	*
+	*	storage.find({id:1}).duplicate();
+	*
+	*	storage.root("data").find({id:4}).duplicate();
+	*
+
+	*
+	* @function duplicate
+	*
+	*
+	* @return {Object} cStorage Object
+	*
+	* @api public
+	*/
+
+
+
+	cStorage.prototype.duplicate = function() {
+
+		if ( !this._foundPath || !this._foundParent ) {
+			return this;
+		}
+		var root = this._foundPath.shift();
+		var loopRoot = _helper.getRootObjFromString(this._data, root);
+		if (loopRoot) {
+			if (Object.prototype.toString.call( loopRoot ) === '[object Array]') {
+				var dupli = JSON.parse(JSON.stringify(this._foundParent));
+				if (dupli) {
+					loopRoot.splice(this._indexOf, 0 ,dupli);
+				}
+			}
+		}
+
+		return this;
+	};
+
+
+
+
 
 
 	/**

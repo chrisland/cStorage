@@ -536,3 +536,40 @@ Return index number if last search was successful
 [-- back to top --](#link-top)
 <!-- End src/cStorage.js -->
 
+
+
+
+# JS Setter/Getter Example
+
+	var myData = {
+
+		data: new cStorage('myData'),
+
+		init: function () {
+
+			if ( this.data.isEmpty() ) {
+				this.data.save( {"data":[]} );
+			}
+
+		},
+		setData: function (obj) {
+
+			if (!obj || !obj.id) { return false; }
+			var found = this.data.root('data').find( {id: obj.id}, true );
+			if ( found.isFound() === true ) {
+				found.edit(obj);
+				return true;
+			} else {
+				this.data.root('data').add(obj);
+				return true;
+			}
+			return false;
+
+		},
+		getData: function (id) {
+			
+			if (!id) { return false; }
+			return this.data.root('data').find( {id:id}, true ).get();
+
+		}
+	};
